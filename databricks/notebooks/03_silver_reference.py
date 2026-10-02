@@ -100,6 +100,7 @@ started = now()
 cur = spark.table("nestle_dev.bronze.erp_products").drop("_ingested_at", "_source").toPandas()
 log = spark.table("nestle_dev.bronze.erp_product_changes").drop("_ingested_at", "_source").toPandas()
 cur["valid_start"] = pd.Timestamp("2015-01-01")
+cur["case_weight_kg"] = cur["case_weight_kg"].astype(float)      # DECIMAL from Azure SQL arrives as decimal.Decimal
 
 
 def grams(size: str) -> float:
