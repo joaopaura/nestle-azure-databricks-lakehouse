@@ -1,20 +1,20 @@
 {
   "name": "Nestle FMCG Lakehouse",
-  "dataColors": ["#64513D", "#005695", "#C8A97E", "#2E7D4F", "#D08A2E", "#7FA7C9", "#B9B2AA", "#3E3226"],
+  "dataColors": ["#005BA5", "#64513D", "#7FADD2", "#2E7D4F", "#D08A2E", "#B8A48C", "#A9B4BF", "#003E73"],
   "background": "#FFFFFF",
-  "foreground": "#2B2520",
-  "tableAccent": "#64513D",
+  "foreground": "#1C2B3A",
+  "tableAccent": "#005BA5",
   "good": "#2E7D4F",
   "neutral": "#D08A2E",
   "bad": "#C2402E",
-  "maximum": "#64513D",
-  "center": "#C8A97E",
-  "minimum": "#F4EFE8",
+  "maximum": "#005BA5",
+  "center": "#7FADD2",
+  "minimum": "#E8F1F9",
   "textClasses": {
-    "callout": { "fontSize": 28, "fontFace": "Segoe UI Semibold", "color": "#2B2520" },
-    "title": { "fontSize": 14, "fontFace": "Segoe UI Semibold", "color": "#2B2520" },
-    "header": { "fontSize": 12, "fontFace": "Segoe UI Semibold", "color": "#2B2520" },
-    "label": { "fontSize": 10, "fontFace": "Segoe UI", "color": "#6B625A" }
+    "callout": { "fontSize": 28, "fontFace": "Segoe UI Semibold", "color": "#1C2B3A" },
+    "title": { "fontSize": 14, "fontFace": "Segoe UI Semibold", "color": "#1C2B3A" },
+    "header": { "fontSize": 12, "fontFace": "Segoe UI Semibold", "color": "#1C2B3A" },
+    "label": { "fontSize": 10, "fontFace": "Segoe UI", "color": "#5B6B7B" }
   },
   "visualStyles": {
     "*": {
@@ -23,29 +23,29 @@
         "title": [{ "show": false }],
         "border": [{ "show": false }],
         "dropShadow": [{ "show": false }],
-        "categoryAxis": [{ "labelColor": { "solid": { "color": "#6B625A" } }, "fontSize": 10, "showAxisTitle": false, "gridlineShow": false }],
-        "valueAxis": [{ "labelColor": { "solid": { "color": "#6B625A" } }, "fontSize": 10, "showAxisTitle": false, "gridlineColor": { "solid": { "color": "#E7E1D8" } }, "gridlineStyle": "dotted" }],
-        "legend": [{ "labelColor": { "solid": { "color": "#6B625A" } }, "fontSize": 10, "position": "Top" }],
-        "labels": [{ "color": { "solid": { "color": "#2B2520" } }, "fontSize": 10 }]
+        "categoryAxis": [{ "labelColor": { "solid": { "color": "#5B6B7B" } }, "fontSize": 10, "showAxisTitle": false, "gridlineShow": false }],
+        "valueAxis": [{ "labelColor": { "solid": { "color": "#5B6B7B" } }, "fontSize": 10, "showAxisTitle": false, "gridlineColor": { "solid": { "color": "#E1E7EE" } }, "gridlineStyle": "dotted" }],
+        "legend": [{ "labelColor": { "solid": { "color": "#5B6B7B" } }, "fontSize": 10, "position": "Top" }],
+        "labels": [{ "color": { "solid": { "color": "#1C2B3A" } }, "fontSize": 10 }]
       }
     },
     "page": {
       "*": {
-        "outspace": [{ "color": { "solid": { "color": "#F8F6F3" } } }],
+        "outspace": [{ "color": { "solid": { "color": "#F6F8FA" } } }],
         "background": [{ "transparency": 0 }]
       }
     },
     "slicer": {
       "*": {
         "header": [{ "show": false }],
-        "items": [{ "fontColor": { "solid": { "color": "#2B2520" } }, "fontSize": 11 }]
+        "items": [{ "fontColor": { "solid": { "color": "#1C2B3A" } }, "fontSize": 11 }]
       }
     },
     "tableEx": {
       "*": {
-        "columnHeaders": [{ "fontColor": { "solid": { "color": "#6B625A" } }, "backColor": { "solid": { "color": "#FFFFFF" } }, "fontSize": 10 }],
-        "values": [{ "fontColorPrimary": { "solid": { "color": "#2B2520" } }, "backColorPrimary": { "solid": { "color": "#FFFFFF" } }, "backColorSecondary": { "solid": { "color": "#FAF8F5" } }, "fontSize": 10 }],
-        "grid": [{ "gridHorizontal": true, "gridHorizontalColor": { "solid": { "color": "#E7E1D8" } }, "gridVertical": false }]
+        "columnHeaders": [{ "fontColor": { "solid": { "color": "#5B6B7B" } }, "backColor": { "solid": { "color": "#FFFFFF" } }, "fontSize": 10 }],
+        "values": [{ "fontColorPrimary": { "solid": { "color": "#1C2B3A" } }, "backColorPrimary": { "solid": { "color": "#FFFFFF" } }, "backColorSecondary": { "solid": { "color": "#F8FAFC" } }, "fontSize": 10 }],
+        "grid": [{ "gridHorizontal": true, "gridHorizontalColor": { "solid": { "color": "#E1E7EE" } }, "gridVertical": false }]
       }
     }
   }

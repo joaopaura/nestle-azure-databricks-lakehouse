@@ -2,7 +2,7 @@
 
 > Portfolio project. Not affiliated with Nestlé S.A. Company data is synthetic; public data sources are real.
 > Author: João Paúra | linkedin.com/in/joaopaura | github.com/joaopaura
-> Date: 2 Oct 2026 | Repo: github.com/joaopaura/nestle-azure-databricks-lakehouse
+> Date: 2 Oct 2026 (v1.1) | Repo: github.com/joaopaura/nestle-azure-databricks-lakehouse
 
 ## 1. Objective
 Show hands-on, end-to-end delivery on the **Azure Databricks** stack that Polish and European employers ask for
@@ -68,17 +68,16 @@ MLflow, Azure SQL Database, ADLS Gen2, Azure Data Factory, Databricks Asset Bund
 | Governance: grants, row filter, column mask, tags, lineage | Multi-workspace / prod environment |
 | Weekly demand forecast with MLflow, model in Unity Catalog | Model serving endpoint |
 | Optimisation benchmark (before / after) | Terraform (already shown in Roche project) |
-| Power BI, 5 pages, Publish to web | Live connection after trial ends (Import mode only) |
+| Power BI, 4 pages, Publish to web | Live connection after trial ends (Import mode only) |
 
-## 6. Dashboard (Power BI, light theme, 1920 x 1080, same grid as Roche / Shell)
+## 6. Dashboard (Power BI, 4 pages: 1 cover + 3 data pages, light theme, 1920 x 1080, same grid as Roche / Shell)
 
-| # | Page | 6 KPI cards | Main visuals |
+| # | Page | KPI cards | Main visuals |
 |---|---|---|---|
-| 1 | Home | Rows processed, Reconciliation checks passed, Forecast accuracy | Title, description, stack chips, 4 facts, 4 navigation cards |
+| 1 | Home (cover) | Rows processed, Reconciliation checks passed, Forecast accuracy | Large Nestlé logo, title, description, stack chips, 4 facts, 3 navigation cards |
 | 2 | Commercial Performance | Net sales, Organic growth, RIG (volume), Pricing, Gross margin %, Volume (tonnes) | Net sales trend vs PY, Organic growth bridge (RIG + pricing + FX), Net sales by category, by country, channel mix |
-| 3 | Demand Forecast | Forecast next 12 weeks, Forecast accuracy, MAPE, Bias, Weeks forecasted, Model version | Actual vs forecast (weekly), MAPE by category, MAPE country x category heatmap, Water sales vs temperature |
-| 4 | Sell-in vs Sell-out & Promotions | Sell-in, Sell-out, Sell-through %, Distributor stock cover (weeks), Promo share of sales, Promo uplift | Sell-in vs sell-out trend, stock cover by distributor, uplift by category, top promotions table |
-| 5 | Platform & Data Quality | Pipeline runs, Rows processed, DQ expectations passed, Reconciliation pass rate, Last run duration, Estimated DBU cost | Rows by layer, DQ results by expectation, reconciliation table, architecture diagram, optimisation benchmark |
+| 3 | Demand & Sell-out | Forecast accuracy, MAPE, Bias, Sell-out, Sell-through %, Promo uplift | Actual vs forecast (weekly), Sell-in vs sell-out, Forecast error by category, Stock cover by distributor, Promo uplift by category |
+| 4 | Platform & Data Quality | Pipeline runs, Rows processed, DQ expectations passed, Reconciliation pass rate, Last run duration, Estimated DBU cost | Rows by layer, Reconciliation Azure SQL vs Delta, Architecture diagram, DQ expectations |
 
 KPI card standard (as previous dashboards): value card + label card with arrow and colour measure, data labels on all charts.
 
@@ -86,18 +85,18 @@ KPI card standard (as previous dashboards): value card + label card with arrow a
 
 | Element | Value |
 |---|---|
-| Logo | Official Nestlé corporate logo (nest + wordmark), PNG with transparent background, `powerbi/design/nestle_logo.png`. Cover: right side, height 230 px. Pages: top right, height 58 px (same as Shell / Roche) |
-| Primary (brand) | Nestlé Oak `#64513D` (official logo colour): titles separator, active nav button, links, main series |
-| Primary dark | `#3E3226`: headline numbers on dark accents |
-| Secondary | Nestlé Blue `#005695`: second series (forecast, sell-out) |
-| Accent | Sand `#C8A97E`: KPI bar, chips border, stripe right half |
-| Soft fills | Cream `#F4EFE8` (chips, architecture boxes), Light blue `#E6EFF6` |
-| Page background | `#F8F6F3` |
-| Card | `#FFFFFF`, border `#E7E1D8`, radius 12 px |
-| Text | Ink `#2B2520`, secondary `#6B625A`, muted `#9A9189` |
-| Status | Good `#2E7D4F`, neutral `#D08A2E`, bad `#C2402E`, prior year / budget grey `#B9B2AA` |
+| Logo | Official Nestlé logo (nest + wordmark, blue), transparent PNG `powerbi/design/nestle_logo.png`. Cover: large and prominent, height 270 px, centred over the navigation cards. Pages: top right, height 58 px |
+| Primary (brand) | Nestlé Blue `#005BA5` (sampled from the logo): title separator, active nav button, links, main series |
+| Primary dark | `#003E73`: chip text, emphasis |
+| Accent | Light blue `#7FADD2`: KPI bar, card accent, stripe right half |
+| Secondary series | Nestlé Oak `#64513D` (corporate brown): prior year / comparison series |
+| Soft fills | Blue soft `#E8F1F9` (chips, architecture boxes), Oak soft `#F3EEE8` |
+| Page background | `#F6F8FA` |
+| Card | `#FFFFFF`, border `#E1E7EE`, radius 12 px |
+| Text | Ink `#1C2B3A`, secondary `#5B6B7B`, muted `#8D9AA7` |
+| Status | Good `#2E7D4F`, neutral `#D08A2E`, bad `#C2402E`, grey `#A9B4BF` |
 | Fonts | Backgrounds: Inter (400 / 500 / 600 / 700). Power BI visuals: Segoe UI and Segoe UI Semibold |
-| Footer | "Developed by João Paúra | Data Engineering & BI portfolio project | Synthetic company data generated in Python, real public data (ECB, Eurostat, Open-Meteo), processed on Azure Databricks | Independent project, not affiliated with or endorsed by Nestlé S.A." + "linkedin.com/in/joaopaura | github.com/joaopaura" |
+| Footer | "Developed by João Paúra | Data Engineering & BI portfolio project | Synthetic company data, real public data (ECB, Eurostat, Open-Meteo), processed on Azure Databricks | Independent project, not affiliated with or endorsed by Nestlé S.A." + "linkedin.com/in/joaopaura | github.com/joaopaura" |
 
 ## 8. Phases, effort and cost
 
@@ -137,4 +136,4 @@ Budget cap US$150 of ~US$198 credit (trial ends ~28 Oct 2026). Never click Upgra
 - Public repo with code, notebooks, bundle, tests, architecture diagram and screenshots.
 - Reconciliation: 100% of checks pass (one planted failure fixed and documented as an interview story).
 - Forecast accuracy reported honestly (MAPE per category), model registered in Unity Catalog.
-- Power BI report published (5 pages), total Azure spend below US$150.
+- Power BI report published (4 pages), total Azure spend below US$150.

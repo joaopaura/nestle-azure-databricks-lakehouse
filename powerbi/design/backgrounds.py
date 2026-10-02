@@ -13,9 +13,9 @@ b64 = lambda p: base64.b64encode((HERE / p).read_bytes()).decode()
 FONTS = "".join(f"@font-face{{font-family:'Inter';font-weight:{w};src:url(data:font/woff2;base64,{b64(f'inter-latin-{w}-normal.woff2')}) format('woff2')}}"
                 for w in (400, 500, 600, 700))
 
-# Nestlé palette: Oak is the official logo colour, Nestlé Blue secondary, sand accent, warm light theme
-T = dict(bg="#F8F6F3", panel="#FFFFFF", border="#E7E1D8", ink="#2B2520", ink2="#6B625A", muted="#9A9189",
-         oak="#64513D", oak_dark="#3E3226", blue="#005695", sand="#C8A97E", cream="#F4EFE8", blue_soft="#E6EFF6",
+# Nestlé palette: Nestlé Blue #005BA5 (sampled from the logo) primary, Oak secondary, light blue accent, light theme
+T = dict(bg="#F6F8FA", panel="#FFFFFF", border="#E1E7EE", ink="#1C2B3A", ink2="#5B6B7B", muted="#8D9AA7",
+         blue="#005BA5", blue_dark="#003E73", accent="#7FADD2", blue_soft="#E8F1F9", oak="#64513D", oak_soft="#F3EEE8",
          green="#2E7D4F")
 
 LOGO_FILE = HERE / "nestle_logo.png"
@@ -26,8 +26,8 @@ if LOGO_FILE.exists():
     LOGO_HTML = lambda style, h: f"<img class='abs' src='data:image/png;base64,{b64('nestle_logo.png')}' style='{style};height:{h}px'>"
 else:  # placeholder until the real logo is saved
     LOGO_RATIO = 1.25
-    LOGO_HTML = lambda style, h: (f"<div class='abs' style='{style};height:{h}px;width:{int(h * LOGO_RATIO)}px;border:2px dashed {T['oak']};"
-                                  f"border-radius:8px;color:{T['oak']};font-weight:700;font-size:{max(10, h // 6)}px;display:flex;"
+    LOGO_HTML = lambda style, h: (f"<div class='abs' style='{style};height:{h}px;width:{int(h * LOGO_RATIO)}px;border:2px dashed {T['blue']};"
+                                  f"border-radius:8px;color:{T['blue']};font-weight:700;font-size:{max(10, h // 6)}px;display:flex;"
                                   f"align-items:center;justify-content:center;text-align:center'>Nestlé<br>logo</div>")
 
 PAGE_LOGO_H = 58
@@ -37,8 +37,8 @@ ROW2_Y, ROW2_H = 316, 350
 ROW3_Y, ROW3_H = 686, 334
 TWO = [(48, 900), (972, 900)]
 THREE = [(48, 592), (664, 592), (1280, 592)]
-NAV = ["Home", "Commercial", "Forecast", "Sell-in &amp; Promo", "Platform &amp; DQ"]
-NAV_W, NAV_H, NAV_GAP, NAV_Y = 150, 40, 8, 30
+NAV = ["Home", "Commercial", "Demand &amp; Sell-out", "Platform &amp; DQ"]
+NAV_W, NAV_H, NAV_GAP, NAV_Y = 168, 40, 8, 30
 NAV_X0 = 1920 - 48 - PAGE_LOGO_W - 28 - (len(NAV) * NAV_W + (len(NAV) - 1) * NAV_GAP)
 SLICER_X = [48, 290, 532, 774]; SLICER_Y = 124; SLICER_W = 226
 
@@ -52,22 +52,22 @@ CSS = f"""{FONTS}
 body{{width:1920px;height:1080px;background:{T['bg']};font-family:'Inter',sans-serif;color:{T['ink']};position:relative;overflow:hidden}}
 .abs{{position:absolute}}
 .title{{left:48px;top:24px;font-size:30px;font-weight:700;letter-spacing:-0.3px}}
-.title span{{color:{T['oak']}}}
+.title span{{color:{T['blue']}}}
 .sub{{left:48px;top:68px;font-size:15px;color:{T['ink2']};width:880px;line-height:1.35;white-space:nowrap}}
 .nav{{height:{NAV_H}px;width:{NAV_W}px;border-radius:8px;border:1px solid {T['border']};background:#fff;
       font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;color:{T['ink']}}}
-.nav.on{{background:{T['oak']};border-color:{T['oak']};color:#fff}}
+.nav.on{{background:{T['blue']};border-color:{T['blue']};color:#fff}}
 .slabel{{font-size:12px;font-weight:600;color:{T['ink2']};text-transform:uppercase;letter-spacing:.6px}}
-.card{{background:{T['panel']};border:1px solid {T['border']};border-radius:12px;box-shadow:0 1px 2px rgba(43,37,32,.05)}}
+.card{{background:{T['panel']};border:1px solid {T['border']};border-radius:12px;box-shadow:0 1px 2px rgba(28,43,58,.05)}}
 .kpi .l{{position:absolute;left:20px;top:16px;font-size:13px;font-weight:600;color:{T['ink2']}}}
-.kpi .bar{{position:absolute;left:0;top:16px;width:4px;height:20px;border-radius:0 3px 3px 0;background:{T['sand']}}}
+.kpi .bar{{position:absolute;left:0;top:16px;width:4px;height:20px;border-radius:0 3px 3px 0;background:{T['accent']}}}
 .panel .h{{position:absolute;left:24px;top:18px;font-size:17px;font-weight:700}}
 .panel .s{{position:absolute;left:24px;top:44px;font-size:12.5px;color:{T['ink2']}}}
 .footer{{left:48px;top:1044px;font-size:12px;color:{T['muted']}}}
 .footer b{{color:{T['ink2']};font-weight:700}}
 .footr{{right:48px;top:1044px;font-size:12px;color:{T['ink2']};font-weight:600}}
 .fline{{left:48px;top:1032px;width:1824px;height:1px;background:{T['border']}}}
-.stripe{{left:0;top:0;width:1920px;height:6px;background:linear-gradient(90deg,{T['oak']} 0 50%,{T['sand']} 50% 100%)}}
+.stripe{{left:0;top:0;width:1920px;height:6px;background:linear-gradient(90deg,{T['blue']} 0 50%,{T['accent']} 50% 100%)}}
 """
 
 
@@ -114,13 +114,13 @@ def arch() -> str:
     W, G = 146, 26
     X = [24 + i * (W + G) for i in range(7)]
     s = ""
-    s += b(X[0], 84, W, 172, "Sources", "Legacy ERP (Azure SQL)<br>distributor files<br>ECB, Eurostat, weather", "#F1EDE7")
-    s += b(X[1], 84, W, 172, "ADLS Gen2", "landing zone<br>CSV, JSON<br>POS events", T["blue_soft"])
-    s += b(X[2], 84, W, 172, "Bronze", "Auto Loader<br>raw Delta<br>+ metadata", T["cream"])
-    s += b(X[3], 84, W, 172, "Silver", "PySpark, DLT<br>expectations<br>SCD2, MERGE", T["cream"])
-    s += b(X[4], 84, W, 172, "Gold", "Star schema<br>KPI marts<br>Unity Catalog", T["cream"])
-    s += b(X[5], 84, W, 172, "ML", "Weekly forecast<br>MLflow<br>UC model registry", T["blue_soft"])
-    s += b(X[6], 84, 106, 172, "Power BI", "Import mode<br>5 pages", T["oak"], "#FFFFFF")
+    s += b(X[0], 84, W, 172, "Sources", "Legacy ERP (Azure SQL)<br>distributor files<br>ECB, Eurostat, weather", "#EEF2F6")
+    s += b(X[1], 84, W, 172, "ADLS Gen2", "landing zone<br>CSV, JSON<br>POS events", T["oak_soft"])
+    s += b(X[2], 84, W, 172, "Bronze", "Auto Loader<br>raw Delta<br>+ metadata", T["blue_soft"])
+    s += b(X[3], 84, W, 172, "Silver", "PySpark, DLT<br>expectations<br>SCD2, MERGE", T["blue_soft"])
+    s += b(X[4], 84, W, 172, "Gold", "Star schema<br>KPI marts<br>Unity Catalog", T["blue_soft"])
+    s += b(X[5], 84, W, 172, "ML", "Weekly forecast<br>MLflow<br>UC model registry", T["oak_soft"])
+    s += b(X[6], 84, 106, 172, "Power BI", "Import mode<br>4 pages", T["blue"], "#FFFFFF")
     for i in range(6):
         s += arrow(X[i] + W, 170, G)
     s += b(24, 272, 1160, 44, "Reconciliation Azure SQL vs Delta | DQ expectations | Workflow + ADF | Asset Bundle + GitHub Actions", "", T["bg"])
@@ -138,27 +138,18 @@ PAGES = {
                 (THREE[0][0], ROW3_Y, THREE[0][1], ROW3_H, "Net sales by category", "EUR m and organic growth, selected period", ""),
                 (THREE[1][0], ROW3_Y, THREE[1][1], ROW3_H, "Net sales by country", "EUR m, top 12 markets", ""),
                 (THREE[2][0], ROW3_Y, THREE[2][1], ROW3_H, "Channel mix", "Share of net sales by channel", "")]),
-    "03_forecast": dict(
-        nav=2, title="Demand Forecast <span>|</span> Actual vs forecast",
-        sub="Weekly demand forecast per country and category, trained in Azure Databricks and tracked with MLflow",
-        slicers=["Year", "Country", "Category", ""],
-        kpis=["Forecast next 12 weeks", "Forecast accuracy", "MAPE", "Bias", "Weeks forecasted", "Model version"],
+    "03_demand": dict(
+        nav=2, title="Demand &amp; Sell-out <span>|</span> Forecast and promotions",
+        sub="Weekly demand forecast (MLflow), distributor sell-out vs sell-in and promotion performance | tonnes, EUR",
+        slicers=["Year", "Country", "Category", "Channel"],
+        kpis=["Forecast accuracy", "MAPE", "Bias", "Sell-out", "Sell-through", "Promo uplift"],
         panels=[(TWO[0][0], ROW2_Y, TWO[0][1], ROW2_H, "Actual vs forecast", "Volume per week, tonnes | test period and next 12 weeks", ""),
-                (TWO[1][0], ROW2_Y, TWO[1][1], ROW2_H, "MAPE by country and category", "Forecast error on the test period, lower is better", ""),
-                (THREE[0][0], ROW3_Y, THREE[0][1], ROW3_H, "MAPE by category", "Test period, %", ""),
-                (THREE[1][0], ROW3_Y, THREE[1][1], ROW3_H, "Bias by channel", "Forecast minus actual, % of actual", ""),
-                (THREE[2][0], ROW3_Y, THREE[2][1], ROW3_H, "Water sales vs temperature", "Weekly volume and average temperature (Open-Meteo)", "")]),
-    "04_sellin_promo": dict(
-        nav=3, title="Sell-in vs Sell-out <span>|</span> Promotions",
-        sub="Shipments to customers compared with distributor sell-out, stock cover and promotion performance | EUR",
-        slicers=["Year", "Country", "Category", "Distributor"],
-        kpis=["Sell-in", "Sell-out", "Sell-through", "Stock cover (weeks)", "Promo share of sales", "Promo uplift"],
-        panels=[(TWO[0][0], ROW2_Y, TWO[0][1], ROW2_H, "Sell-in vs sell-out trend", "EUR m per month", ""),
-                (TWO[1][0], ROW2_Y, TWO[1][1], ROW2_H, "Stock cover by distributor", "Weeks of stock at period end, target 3 to 5 weeks", ""),
-                (TWO[0][0], ROW3_Y, TWO[0][1], ROW3_H, "Promo uplift by category", "Incremental volume vs baseline, %", ""),
-                (TWO[1][0], ROW3_Y, TWO[1][1], ROW3_H, "Top promotions", "Uplift, incremental net sales and ROI, selected period", "")]),
-    "05_platform_dq": dict(
-        nav=4, title="Platform &amp; Data Quality <span>|</span> Azure Databricks",
+                (TWO[1][0], ROW2_Y, TWO[1][1], ROW2_H, "Sell-in vs sell-out", "EUR m per month | gap = stock building at distributors", ""),
+                (THREE[0][0], ROW3_Y, THREE[0][1], ROW3_H, "Forecast error by category", "MAPE on the test period, lower is better", ""),
+                (THREE[1][0], ROW3_Y, THREE[1][1], ROW3_H, "Stock cover by distributor", "Weeks of stock at period end, target 3 to 5 weeks", ""),
+                (THREE[2][0], ROW3_Y, THREE[2][1], ROW3_H, "Promo uplift by category", "Incremental volume vs baseline, %", "")]),
+    "04_platform_dq": dict(
+        nav=3, title="Platform &amp; Data Quality <span>|</span> Azure Databricks",
         sub="Legacy ERP migrated to a governed lakehouse: medallion layers, expectations, reconciliation and cost",
         slicers=["", "", "", ""],
         kpis=["Pipeline runs", "Rows processed", "DQ expectations passed", "Reconciliation pass rate", "Last run duration", "Estimated DBU cost"],
@@ -170,9 +161,9 @@ PAGES = {
 
 
 def cover() -> str:
-    logo_h = 230
-    h = LOGO_HTML(f"left:{1872 - int(logo_h * LOGO_RATIO)}px;top:44px", logo_h)
-    h += (f"<div class='abs' style='left:48px;top:180px;font-size:14px;font-weight:700;color:{T['oak']};letter-spacing:1.4px'>"
+    logo_h = 270  # cover logo: big and prominent, centred over the right column (x 1180 to 1872)
+    h = LOGO_HTML(f"left:{1526 - int(logo_h * LOGO_RATIO / 2)}px;top:34px", logo_h)
+    h += (f"<div class='abs' style='left:48px;top:180px;font-size:14px;font-weight:700;color:{T['blue']};letter-spacing:1.4px'>"
           "PORTFOLIO PROJECT | FMCG DATA ENGINEERING</div>")
     h += "<div class='abs' style='left:48px;top:212px;font-size:60px;font-weight:700;letter-spacing:-1.2px;line-height:1.05'>Nestlé European<br>FMCG Lakehouse</div>"
     h += (f"<div class='abs' style='left:48px;top:360px;width:1040px;font-size:19px;color:{T['ink2']};line-height:1.5'>"
@@ -186,8 +177,8 @@ def cover() -> str:
     x = 48
     for c in chips:
         w = 28 + len(c) * 9
-        h += (f"<div class='abs' style='left:{x}px;top:690px;height:36px;width:{w}px;border-radius:18px;background:{T['cream']};"
-              f"color:{T['oak_dark']};font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center'>{c}</div>")
+        h += (f"<div class='abs' style='left:{x}px;top:690px;height:36px;width:{w}px;border-radius:18px;background:{T['blue_soft']};"
+              f"color:{T['blue_dark']};font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center'>{c}</div>")
         x += w + 10
     facts = [("[rows]", "rows across ERP, files and stream"), ("[tables]", "Delta tables in Unity Catalog"),
              ("[diff]", "difference Azure SQL vs Delta"), ("[cost]", "total Azure spend")]
@@ -196,17 +187,16 @@ def cover() -> str:
         h += (f"<div class='abs' style='left:{x}px;top:770px;width:240px'><div style='font-size:30px;font-weight:700;color:{T['ink']}'>{big}</div>"
               f"<div style='font-size:13.5px;color:{T['ink2']};margin-top:4px'>{small}</div></div>")
     cards = [("Commercial", "Net sales, organic growth, RIG, pricing and margin"),
-             ("Demand Forecast", "Actual vs forecast, MAPE and bias by market"),
-             ("Sell-in &amp; Promo", "Sell-in vs sell-out, stock cover and promo uplift"),
+             ("Demand &amp; Sell-out", "Forecast vs actual, sell-in vs sell-out and promo uplift"),
              ("Platform &amp; DQ", "Reconciliation, expectations, lineage and cost")]
     for i, (name, desc) in enumerate(cards):
-        x = 1180 + (i % 2) * 358; y = 300 + (i // 2) * 170
+        x = 1180 + (i % 2) * 358; y = 336 + (i // 2) * 170
         h += (f"<div class='abs card' style='left:{x}px;top:{y}px;width:334px;height:150px'>"
-              f"<div class='abs' style='left:24px;top:20px;width:36px;height:4px;border-radius:2px;background:{T['sand']}'></div>"
+              f"<div class='abs' style='left:24px;top:20px;width:36px;height:4px;border-radius:2px;background:{T['accent']}'></div>"
               f"<div class='abs' style='left:24px;top:36px;font-size:21px;font-weight:700'>{name}</div>"
               f"<div class='abs' style='left:24px;top:70px;width:286px;font-size:13.5px;color:{T['ink2']};line-height:1.45'>{desc}</div>"
-              f"<div class='abs' style='left:24px;top:116px;font-size:14px;font-weight:700;color:{T['oak']}'>Open page &#8594;</div></div>")
-    h += (f"<div class='abs' style='left:1180px;top:650px;width:692px;font-size:12.5px;color:{T['muted']};line-height:1.5'>"
+              f"<div class='abs' style='left:24px;top:116px;font-size:14px;font-weight:700;color:{T['blue']}'>Open page &#8594;</div></div>")
+    h += (f"<div class='abs' style='left:1538px;top:516px;width:334px;font-size:12.5px;color:{T['muted']};line-height:1.5'>"
           "Company figures are synthetic and generated for portfolio purposes. They do not represent Nestlé S.A. reporting. "
           "FX, inflation and weather data are real public data. The Nestlé logo is used only to identify the case study.</div>")
     return base(h)
