@@ -15,12 +15,17 @@
 
 # COMMAND ----------
 
+JSON_RECORDS = ("records ARRAY<STRUCT<dist: STRING, period_end: STRING, barcode: STRING, sold: STRING, "
+                "uom: STRING, stock: STRING, market: STRING>>")
+
+
 def autoload(name: str, fmt: str, glob: str, options: dict, explode_records: bool = False) -> None:
     started = now()
     target = f"nestle_dev.bronze.{name}"
+    ver = "_v2" if explode_records else ""          # v2: JSON schema with typed records array (see note below)
     df = (spark.readStream.format("cloudFiles")
           .option("cloudFiles.format", fmt)
-          .option("cloudFiles.schemaLocation", f"{CHECKPOINTS}/{name}/schema")
+          .option("cloudFiles.schemaLocation", f"{CHECKPOINTS}/{name}/schema{ver}")
           .option("cloudFiles.inferColumnTypes", "false")
           .option("pathGlobFilter", glob)
           .options(**options)
@@ -32,14 +37,17 @@ def autoload(name: str, fmt: str, glob: str, options: dict, explode_records: boo
             .withColumn("_ingested_at", F.current_timestamp())
             .drop("_metadata"))
     before = spark.table(target).count() if spark.catalog.tableExists(target) else 0
-    (df.writeStream.option("checkpointLocation", f"{CHECKPOINTS}/{name}/cp")
+    (df.writeStream.option("checkpointLocation", f"{CHECKPOINTS}/{name}/cp{ver}")
        .option("mergeSchema", "true").trigger(availableNow=True).toTable(target).awaitTermination())
     log_step("bronze", "autoloader_sellout", target, table_rows(target) - before, started)
 
 
 autoload("sellout_layout_a", "csv", "sellout_C*.csv", {"header": "true", "sep": ";"})
 autoload("sellout_layout_b", "csv", "c0*.csv", {"header": "true", "sep": ","})
-autoload("sellout_layout_json", "json", "sellout_*.json", {"multiLine": "true"}, explode_records=True)
+# With inferColumnTypes=false Auto Loader reads every top-level JSON field as STRING, including the records
+# array; the schema hint keeps `records` as an array of structs (leaf values stay STRING) so it can be exploded.
+autoload("sellout_layout_json", "json", "sellout_*.json",
+         {"multiLine": "true", "cloudFiles.schemaHints": JSON_RECORDS}, explode_records=True)
 
 # COMMAND ----------
 
