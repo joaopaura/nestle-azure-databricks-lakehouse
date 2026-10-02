@@ -2,7 +2,7 @@
 # MAGIC %md
 # MAGIC # 01 | Bronze: legacy ERP (Azure SQL) via Lakehouse Federation
 # MAGIC The legacy ERP lives in Azure SQL (`sqldb-nestle-erp`). Unity Catalog reaches it through the connection
-# MAGIC `conn_nestle_erp` and the foreign catalog `erp_legacy` (read-only login `dbx_reader`, password kept in Unity Catalog).
+# MAGIC `erp_legacy` and the foreign catalog `erp_legacy_catalog` (read-only login `dbx_reader`, password kept in Unity Catalog).
 # MAGIC Each table is copied as-is into `nestle_dev.bronze.erp_<table>` with ingestion metadata. Full reload (snapshot);
 # MAGIC the source counts are compared again later in the reconciliation notebook.
 
@@ -19,7 +19,7 @@ for t in TABLES:
     started = now()
     target = f"nestle_dev.bronze.erp_{t}"
     try:
-        (spark.table(f"erp_legacy.erp.{t}")
+        (spark.table(f"erp_legacy_catalog.erp.{t}")
               .withColumn("_ingested_at", F.current_timestamp())
               .withColumn("_source", F.lit(f"azure_sql/sqldb-nestle-erp/erp.{t}"))
               .write.mode("overwrite").option("overwriteSchema", "true").saveAsTable(target))
