@@ -6,7 +6,15 @@ End-to-end data engineering project on **Azure Databricks**: a legacy ERP (Azure
 Delta lakehouse (Unity Catalog, bronze / silver / gold), reconciled against the source, enriched with real public data
 (ECB FX, Eurostat HICP, Open-Meteo weather) and used to forecast weekly demand with MLflow. Served in Power BI.
 
-**Status:** in progress (Phase 0). Scope: [docs/scope.md](docs/scope.md)
+**Status:** in progress (Phase 1: data generation). Scope: [docs/scope.md](docs/scope.md)
+
+## Generate the data
+```bash
+pip install -r generator/requirements.txt
+python generator/download_public.py   # real public data: ECB FX, Eurostat / ONS food inflation, Open-Meteo weather
+python generator/run_all.py           # synthetic ERP, dirty distributor files, POS event stream (~8 min)
+python generator/validate.py          # row counts + business story checks
+```
 
 ## Repository layout
 | Folder | Content |

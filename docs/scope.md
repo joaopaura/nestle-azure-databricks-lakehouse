@@ -23,7 +23,7 @@ Audience: hiring managers for Data Engineer / Analytics Engineer / Senior Data A
 | SKUs | ~350 fictitious SKUs (real Nestlé-style category names, invented product names) |
 | Customers | ~2,500 (retail chains, wholesalers, distributors, e-commerce, out-of-home) |
 | Channels (4) | Modern trade, Traditional trade, E-commerce, Out-of-home |
-| Volume target | 30 to 50M rows total (sales order lines is the largest table) |
+| Volume | ~14M rows: ~10.8M sales order lines, 640k orders, 1.9M distributor sell-out rows in 3,480 dirty files, 620k POS events (sized for the Azure SQL free offer and serverless budget) |
 
 Built-in business stories (planted in the generator, discovered in the dashboard):
 1. Pricing drives growth in 2022 to 2023 (inflation), volume (RIG) recovers in 2025 to 2026.
@@ -117,7 +117,8 @@ KPI card standard (as previous dashboards): value card + label card with arrow a
 Budget cap US$150 of ~US$198 credit (trial ends ~28 Oct 2026). Never click Upgrade.
 
 ## 9. Cost guardrails
-- Single-node cluster (4 vCPU), auto-termination 10 min, no SQL warehouse left running (Serverless off or stopped).
+- Compute: Databricks **serverless** (notebooks, jobs, pipelines) in Sweden Central. Decision 2 Oct 2026: the trial subscription has only 3 vCPUs per region (checked Sweden Central, North Europe, West Europe, Germany West Central, France Central) and quota increases need an upgrade, so a 4-vCPU classic node is not possible. Serverless does not use the subscription vCPU quota.
+- No SQL warehouse left running; stop serverless sessions after each working block.
 - Budget alerts every ~US$30. Check Cost analysis at the end of every working session.
 - Workspace created only when data and code are ready (14-day DBU trial starts at creation).
 - After screenshots: delete Databricks workspace + managed resource group, pause / delete Azure SQL DB `nestle_erp`.
@@ -126,7 +127,7 @@ Budget cap US$150 of ~US$198 credit (trial ends ~28 Oct 2026). Never click Upgra
 
 | Risk | Mitigation |
 |---|---|
-| vCPU quota too low (trial ~4 vCPU / region) | Single node 4 vCPU; choose region with free quota |
+| vCPU quota too low (trial: 3 vCPU / region, no increase) | Serverless compute (confirmed decision) |
 | DBU / VM cost overrun | Budget alerts, auto-termination, sample data option (10M rows) |
 | DLT not available on the tier | Same logic in PySpark notebooks with expectations table |
 | Unity Catalog metastore setup on personal tenant | Use workspace auto-provisioned metastore; document steps |
