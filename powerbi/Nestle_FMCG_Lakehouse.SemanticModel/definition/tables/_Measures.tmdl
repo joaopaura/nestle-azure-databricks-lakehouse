@@ -112,13 +112,13 @@ table _Measures
 		lineageTag: ef49b279-3bd7-5b1a-b9b3-330933e54340
 
 	/// Real internal growth: volume growth in tonnes.
-	measure 'RIG' = IF ( ISBLANK ( [Volume (t) PY] ), BLANK (), DIVIDE ( [Volume (t)], [Volume (t) PY] ) - 1 )
+	measure RIG = IF ( ISBLANK ( [Volume (t) PY] ), BLANK (), DIVIDE ( [Volume (t)], [Volume (t) PY] ) - 1 )
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: 01 Commercial
 		lineageTag: 5db458e4-da56-5c35-b278-70c2edf8e092
 
 	/// Pricing contribution = organic growth - RIG.
-	measure 'Pricing' = IF ( ISBLANK ( [RIG] ), BLANK (), [Organic Growth] - [RIG] )
+	measure Pricing = IF ( ISBLANK ( [RIG] ), BLANK (), [Organic Growth] - [RIG] )
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: 01 Commercial
 		lineageTag: 96fbf86c-2641-57ae-8691-3ce1916a50a3
@@ -233,7 +233,7 @@ table _Measures
 		lineageTag: 078cb29c-5002-5002-82e2-fd5257d6b2b9
 
 	/// Mean absolute percentage error, test period.
-	measure 'MAPE' = CALCULATE ( AVERAGEX ( FILTER ( forecast_weekly, NOT forecast_weekly[is_future] && forecast_weekly[actual_t] > 0 ), ABS ( forecast_weekly[actual_t] - forecast_weekly[forecast_t] ) / forecast_weekly[actual_t] ), REMOVEFILTERS ( dim_date ) )
+	measure MAPE = CALCULATE ( AVERAGEX ( FILTER ( forecast_weekly, NOT forecast_weekly[is_future] && forecast_weekly[actual_t] > 0 ), ABS ( forecast_weekly[actual_t] - forecast_weekly[forecast_t] ) / forecast_weekly[actual_t] ), REMOVEFILTERS ( dim_date ) )
 		formatString: 0.0%
 		displayFolder: 02 Forecast
 		lineageTag: 0531c6fa-d4be-5900-b765-a708a768a85b
@@ -245,7 +245,7 @@ table _Measures
 		lineageTag: 0a105824-e2a9-5d15-a713-acd1fcc21a27
 
 	/// Forecast minus actual as a share of actual (negative = under-forecast).
-	measure 'Bias' = DIVIDE ( CALCULATE ( SUMX ( FILTER ( forecast_weekly, NOT forecast_weekly[is_future] ), forecast_weekly[forecast_t] - forecast_weekly[actual_t] ), REMOVEFILTERS ( dim_date ) ), [Actual (t)] )
+	measure Bias = DIVIDE ( CALCULATE ( SUMX ( FILTER ( forecast_weekly, NOT forecast_weekly[is_future] ), forecast_weekly[forecast_t] - forecast_weekly[actual_t] ), REMOVEFILTERS ( dim_date ) ), [Actual (t)] )
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: 02 Forecast
 		lineageTag: bd9f127f-99ab-555c-ae94-f73522f2e137
@@ -291,7 +291,7 @@ table _Measures
 		lineageTag: f424e6d8-80fe-5361-a877-ece2d63d056a
 
 	/// Sell-out as a share of sell-in.
-	measure 'Sell-through' = DIVIDE ( [Sell-out (k cases)], [Sell-in (k cases)] )
+	measure Sell-through = DIVIDE ( [Sell-out (k cases)], [Sell-in (k cases)] )
 		formatString: 0.0%
 		displayFolder: 03 Sell-out
 		lineageTag: d1035eb2-55de-5ec4-8abb-e0417152ede4
@@ -325,12 +325,6 @@ table _Measures
 		displayFolder: 03 Sell-out
 		lineageTag: 67f5f9be-c763-54fd-99b0-ce3e280cdfbe
 
-	/// Stock cover of all selected distributors together.
-	measure 'Network Stock Cover' = CALCULATE ( [Stock Cover (weeks)], ALLSELECTED ( mart_sellin_sellout_weekly[distributor_name] ) )
-		formatString: 0.0
-		displayFolder: 03 Sell-out
-		lineageTag: 7e78cb72-4e8e-5a7d-b321-fe63a57b0862
-
 	/// Red when a distributor holds 30% more weeks of stock than the network (overstock risk).
 	measure 'Stock Cover Colour' = IF ( [Stock Cover (weeks)] > 1.3 * [Network Stock Cover], "#C2402E", "#005BA5" )
 		displayFolder: 99 Formatting
@@ -360,7 +354,7 @@ table _Measures
 		lineageTag: 946a5eb0-0640-5f14-826e-0b0806ac1d44
 
 	/// How the pipeline is orchestrated.
-	measure 'Orchestration' = "Workflow + ADF"
+	measure Orchestration = "Workflow + ADF"
 		displayFolder: 04 Platform
 		lineageTag: c956efc1-a44d-567b-b088-f9cb68db81e9
 
@@ -399,12 +393,6 @@ table _Measures
 		formatString: #,0
 		displayFolder: 04 Platform
 		lineageTag: 4e6da05a-b8ae-5d23-83d0-77d6702f1275
-
-	/// Row count of the 12 largest Delta tables, million.
-	measure 'Rows Top 12 (M)' = DIVIDE ( [Rows Top 12], 1e6 )
-		formatString: #,0.00\M
-		displayFolder: 04 Platform
-		lineageTag: 4c1d3628-12b6-57e8-9d4c-ed3576f8cdca
 
 	/// Data quality expectations evaluated in the latest pipeline run.
 	measure 'DQ Checks Total' = CALCULATE ( COUNTROWS ( dq_results ), dq_results[is_latest_run] = TRUE (), REMOVEFILTERS () )
@@ -471,6 +459,18 @@ table _Measures
 	measure 'Last Run Duration' = VAR s = CALCULATE ( MIN ( run_log[started_at] ), run_log[is_latest_run] = TRUE (), REMOVEFILTERS () ) VAR e = CALCULATE ( MAX ( run_log[ended_at] ), run_log[is_latest_run] = TRUE (), REMOVEFILTERS () ) VAR sec = DATEDIFF ( s, e, SECOND ) RETURN INT ( sec / 60 ) & " min " & FORMAT ( MOD ( sec, 60 ), "00" ) & " s"
 		displayFolder: 04 Platform
 		lineageTag: 5b36476a-3b61-5eda-838d-a15c233ba27a
+
+	/// Stock cover of all selected distributors together.
+	measure 'Network Stock Cover' = CALCULATE ( [Stock Cover (weeks)], ALLSELECTED ( mart_sellin_sellout_weekly[distributor_name] ) )
+		formatString: 0.0
+		displayFolder: 03 Sell-out
+		lineageTag: 7e78cb72-4e8e-5a7d-b321-fe63a57b0862
+
+	/// Row count of the 12 largest Delta tables, million.
+	measure 'Rows Top 12 (M)' = DIVIDE ( [Rows Top 12], 1e6 )
+		formatString: #,0.00\M
+		displayFolder: 04 Platform
+		lineageTag: 4c1d3628-12b6-57e8-9d4c-ed3576f8cdca
 
 	partition _Measures = m
 		mode: import
