@@ -2,7 +2,7 @@
 
 Outputs (data/raw/public/):
   fx_rates_daily.csv      ECB euro reference rates, EUR base (PLN, GBP, CHF, SEK), daily
-  food_inflation_monthly.csv  Food and non-alcoholic beverages price index (Eurostat HICP CP01; UK from ONS D7BU)
+  food_inflation_monthly.csv  Food and non-alcoholic beverages price index (Eurostat HICP prc_hicp_minr CP01; UK from ONS D7BU)
   weather_daily.csv       Open-Meteo historical weather for the 12 capitals (mean temperature, precipitation)
 
 Usage:  python generator/download_public.py
@@ -44,37 +44,38 @@ def fx() -> pd.DataFrame:
     return out.sort_values(["currency", "rate_date"])
 
 
-def _eurostat(unit: str, geos: list[str]) -> pd.DataFrame:
-    url = ("https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/prc_hicp_midx/"
-           f"M.{unit}.CP01.{'+'.join(geos)}?format=SDMX-CSV&startPeriod=2021-01")
-    try:
-        df = pd.read_csv(io.StringIO(get(url).text))[["geo", "TIME_PERIOD", "OBS_VALUE"]].dropna()
-    except Exception:  # noqa: BLE001
-        return pd.DataFrame(columns=["country_code", "month", "index_value"])
-    df.columns = ["country_code", "month", "index_value"]
-    return df
+def _jsonstat(dataset: str, params: str) -> pd.DataFrame:
+    """Eurostat statistics API (JSON-stat 2.0) -> country_code, month, index_value."""
+    url = f"https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/{dataset}?format=JSON&lang=EN&{params}"
+    js = get(url).json()
+    ids, size = js["id"], js["size"]
+    cats = {d: sorted(js["dimension"][d]["category"]["index"].items(), key=lambda kv: kv[1]) for d in ids}
+    rows = []
+    for pos, val in js["value"].items():
+        pos, coord = int(pos), {}
+        for d, n in zip(reversed(ids), reversed(size)):
+            coord[d] = cats[d][pos % n][0]; pos //= n
+        rows.append((coord["geo"], coord["time"], float(val)))
+    return pd.DataFrame(rows, columns=["country_code", "month", "index_value"])
 
 
 def eurostat_food_index(geos: list[str]) -> pd.DataFrame:
-    """HICP CP01 monthly index, 2015=100. Eurostat moved to base 2025=100 in 2026, so the old series (I15)
-    stops in Dec 2025: newer months are spliced from I25 with the 2025 average ratio (standard chain-linking)."""
-    old, new = _eurostat("I15", geos), _eurostat("I25", geos)
-    if old.empty and new.empty:
-        raise RuntimeError("Eurostat HICP download failed")
-    out = []
-    for g in geos:
-        o, n = old[old["country_code"] == g], new[new["country_code"] == g]
-        if o.empty:
-            out.append(n.assign(base="I25")); continue
-        out.append(o.assign(base="I15"))
-        if not n.empty:
-            ratio = o[o["month"].str.startswith("2025")]["index_value"].mean() / n[n["month"].str.startswith("2025")]["index_value"].mean()
-            tail = n[n["month"] > o["month"].max()].copy()
-            tail["index_value"] = (tail["index_value"] * ratio).round(2)
-            out.append(tail.assign(base="I25 spliced to I15"))
-    df = pd.concat(out, ignore_index=True)
-    df["source"] = "Eurostat prc_hicp_midx CP01"
-    return df
+    """HICP food and non-alcoholic beverages (CP01), monthly index 2015=100.
+    Since 2026 Eurostat publishes HICP in the ECOICOP ver.2 dataset prc_hicp_minr (dimension coicop18);
+    the old prc_hicp_midx is frozen at Dec 2025 and is only used as a fallback."""
+    geo = "&".join(f"geo={g}" for g in geos)
+    attempts = [("prc_hicp_minr", f"unit=I15&coicop18=CP01&{geo}&sinceTimePeriod=2021-01"),
+                ("prc_hicp_midx", f"unit=I15&coicop=CP01&{geo}&sinceTimePeriod=2021-01")]
+    for ds, params in attempts:
+        try:
+            df = _jsonstat(ds, params)
+            if not df.empty:
+                df["base"], df["source"] = "I15", f"Eurostat {ds} CP01"
+                print(f"  Eurostat {ds}: {len(df)} rows, last month {df['month'].max()}")
+                return df
+        except Exception as e:  # noqa: BLE001
+            print(f"  Eurostat {ds} failed: {str(e)[:100]}")
+    raise RuntimeError("Eurostat HICP download failed")
 
 
 def ons_uk_food_index() -> pd.DataFrame:
