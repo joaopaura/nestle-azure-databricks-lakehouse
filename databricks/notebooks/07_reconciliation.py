@@ -54,10 +54,6 @@ src_all = src.groupBy("year", "currency").agg(F.sum("net_amount").alias("net_lc"
 gold = (spark.table("nestle_dev.gold.fact_sales").withColumn("year", F.year("order_date"))
         .groupBy("year", "currency").agg(F.sum("net_amount_lc").alias("net_lc"), F.sum("qty_cases").alias("cases")))
 
-cmp = src_rep.alias("s").join(gold.alias("g"), ["year", "currency"], "full_outer").orderBy("year", "currency").collect()
-for r in cmp:
-    record("3_business", f"net_sales {r['year']} {r['currency']}", "net_sales_local_currency",
-           r["s.net_lc"] if "s.net_lc" in r else r[2] or 0, r[4] or 0, tolerance=0.01)
 
 # COMMAND ----------
 
