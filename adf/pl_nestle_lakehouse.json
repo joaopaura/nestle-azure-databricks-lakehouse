@@ -6,7 +6,7 @@
       {
         "name": "Run Databricks lakehouse job",
         "type": "DatabricksJob",
-        "typeProperties": { "jobId": "<job id of [dev] nestle_lakehouse_pipeline>" },
+        "typeProperties": { "jobId": "1064640509376246" },
         "linkedServiceName": { "referenceName": "ls_databricks_nestle", "type": "LinkedServiceReference" },
         "policy": { "timeout": "0.02:00:00", "retry": 0 }
       }
