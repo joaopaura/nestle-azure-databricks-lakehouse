@@ -1,0 +1,10 @@
+data/raw/
+data/_work/
+__pycache__/
+*.pyc
+.venv/
+.env
+*.secret
+.databricks/
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
