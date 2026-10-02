@@ -22,6 +22,7 @@ if ($PosSeptember) {
 }
 Write-Host "Files in landing:" -ForegroundColor Green
 foreach ($p in @("public", "sellout", "pos_stream")) {
-    $n = az storage blob list --account-name $Account --auth-mode login -c landing --prefix "$p/" --num-results "*" --query "length(@)" -o tsv --only-show-errors
+    $names = az storage blob list --account-name $Account --auth-mode login -c landing --prefix "$p/" --num-results 100000 --query "[].name" -o tsv --only-show-errors
+    $n = @($names).Count
     Write-Host ("  {0,-12} {1,6} files" -f $p, $n)
 }
