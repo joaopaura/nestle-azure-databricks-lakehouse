@@ -44,24 +44,37 @@ def fx() -> pd.DataFrame:
     return out.sort_values(["currency", "rate_date"])
 
 
+def _eurostat(unit: str, geos: list[str]) -> pd.DataFrame:
+    url = ("https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/prc_hicp_midx/"
+           f"M.{unit}.CP01.{'+'.join(geos)}?format=SDMX-CSV&startPeriod=2021-01")
+    try:
+        df = pd.read_csv(io.StringIO(get(url).text))[["geo", "TIME_PERIOD", "OBS_VALUE"]].dropna()
+    except Exception:  # noqa: BLE001
+        return pd.DataFrame(columns=["country_code", "month", "index_value"])
+    df.columns = ["country_code", "month", "index_value"]
+    return df
+
+
 def eurostat_food_index(geos: list[str]) -> pd.DataFrame:
-    """HICP CP01 monthly index. Tries several bases because Eurostat rebases over time."""
-    last_err = None
-    for unit in ("I15", "I25", "I05"):
-        url = ("https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/prc_hicp_midx/"
-               f"M.{unit}.CP01.{'+'.join(geos)}?format=SDMX-CSV&startPeriod=2021-01")
-        try:
-            df = pd.read_csv(io.StringIO(get(url).text))
-            df = df[["geo", "TIME_PERIOD", "OBS_VALUE"]].dropna()
-            if df.empty:
-                continue
-            df.columns = ["country_code", "month", "index_value"]
-            df["base"] = unit
-            df["source"] = "Eurostat prc_hicp_midx CP01"
-            return df
-        except Exception as e:  # noqa: BLE001
-            last_err = e
-    raise RuntimeError(f"Eurostat HICP download failed: {last_err}")
+    """HICP CP01 monthly index, 2015=100. Eurostat moved to base 2025=100 in 2026, so the old series (I15)
+    stops in Dec 2025: newer months are spliced from I25 with the 2025 average ratio (standard chain-linking)."""
+    old, new = _eurostat("I15", geos), _eurostat("I25", geos)
+    if old.empty and new.empty:
+        raise RuntimeError("Eurostat HICP download failed")
+    out = []
+    for g in geos:
+        o, n = old[old["country_code"] == g], new[new["country_code"] == g]
+        if o.empty:
+            out.append(n.assign(base="I25")); continue
+        out.append(o.assign(base="I15"))
+        if not n.empty:
+            ratio = o[o["month"].str.startswith("2025")]["index_value"].mean() / n[n["month"].str.startswith("2025")]["index_value"].mean()
+            tail = n[n["month"] > o["month"].max()].copy()
+            tail["index_value"] = (tail["index_value"] * ratio).round(2)
+            out.append(tail.assign(base="I25 spliced to I15"))
+    df = pd.concat(out, ignore_index=True)
+    df["source"] = "Eurostat prc_hicp_midx CP01"
+    return df
 
 
 def ons_uk_food_index() -> pd.DataFrame:
