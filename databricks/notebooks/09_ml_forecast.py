@@ -26,6 +26,8 @@ H = 12
 TEST_START, LAST_FULL_WEEK = pd.Timestamp("2026-07-06"), pd.Timestamp("2026-09-21")
 df = spark.table("nestle_dev.gold.mart_demand_weekly").toPandas()
 df["week_start"] = pd.to_datetime(df["week_start"])
+NUM = ["volume_t", "net_sales_eur", "promo_line_share", "temp_mean_c", "precipitation_mm", "food_inflation_yoy_pct"]
+df[NUM] = df[NUM].astype(float)          # Delta DECIMAL arrives as decimal.Decimal: MLflow input example needs floats
 df = df[df["week_start"] <= LAST_FULL_WEEK].sort_values(["country_code", "category", "week_start"])
 
 # future frame: next 12 weeks after the last complete week
