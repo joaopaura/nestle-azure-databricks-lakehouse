@@ -1,0 +1,104 @@
+table mart_demand_weekly
+	lineageTag: 927197b3-a5e9-4fbe-8b26-6302173bb20b
+
+	column week_start
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: eede7811-7eea-4845-b0b3-ec35faf5c8e8
+		summarizeBy: none
+		sourceColumn: week_start
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column country_code
+		dataType: string
+		isHidden
+		lineageTag: 6d39b7b2-0404-4c30-969a-b72aa5a8521a
+		summarizeBy: none
+		sourceColumn: country_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		isHidden
+		lineageTag: 33595480-f57d-4637-8d61-00b7580eecf6
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column volume_t
+		dataType: double
+		lineageTag: 1021dbdb-6b5d-4a03-acdb-3effdcea1e74
+		summarizeBy: sum
+		sourceColumn: volume_t
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column net_sales_eur
+		dataType: double
+		lineageTag: 09454d6d-c717-4ebc-9486-aec1d517c571
+		summarizeBy: sum
+		sourceColumn: net_sales_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column promo_line_share
+		dataType: double
+		lineageTag: e960ccdb-533f-4c3b-a2c6-3122b9647d8e
+		summarizeBy: sum
+		sourceColumn: promo_line_share
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column temp_mean_c
+		dataType: double
+		lineageTag: 33f5be5d-11df-4ba0-9b05-d1a46fd6c8b5
+		summarizeBy: sum
+		sourceColumn: temp_mean_c
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column precipitation_mm
+		dataType: double
+		lineageTag: 29188333-c0ee-4096-be08-d788f2623f19
+		summarizeBy: sum
+		sourceColumn: precipitation_mm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column food_inflation_yoy_pct
+		dataType: double
+		lineageTag: 47d20be8-db60-4024-9152-5023d13e6e67
+		summarizeBy: sum
+		sourceColumn: food_inflation_yoy_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition mart_demand_weekly = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    gold_Schema = nestle_dev_Database{[Name="gold",Kind="Schema"]}[Data],
+				    mart_demand_weekly_Table = gold_Schema{[Name="mart_demand_weekly",Kind="Table"]}[Data]
+				in
+				    mart_demand_weekly_Table
+

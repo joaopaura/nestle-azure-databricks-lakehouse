@@ -1,0 +1,207 @@
+table mart_promo_performance
+	lineageTag: 0d2e0ec1-0284-46cd-be7b-454a6c6bc08b
+
+	column promo_id
+		dataType: string
+		lineageTag: 6b14e50c-4f43-4da7-a118-a46eac6f9b2d
+		summarizeBy: none
+		sourceColumn: promo_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: string
+		isHidden
+		lineageTag: 8b32e1e8-2e72-4459-a2cd-7b7a28e0a0f4
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		isHidden
+		lineageTag: 4c2bee27-7ad3-4cd8-b5da-3916985feaf5
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column mechanic
+		dataType: string
+		lineageTag: d61c1df2-0796-40ca-93da-6f1dfe630a05
+		summarizeBy: none
+		sourceColumn: mechanic
+
+		annotation SummarizationSetBy = Automatic
+
+	column discount_pct
+		dataType: double
+		lineageTag: a8826ea6-b748-4566-8e71-a1a6f49238ff
+		summarizeBy: sum
+		sourceColumn: discount_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column start_date
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: e28272a8-0615-4fa9-92d6-c2b26cbce0e3
+		summarizeBy: none
+		sourceColumn: start_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column end_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 9d1fbf9c-efbc-4dc0-82e1-4ff7c4dfdb9f
+		summarizeBy: none
+		sourceColumn: end_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column duration_weeks
+		dataType: int64
+		formatString: 0
+		lineageTag: 3281843c-384f-43d2-87b8-feb941842567
+		summarizeBy: sum
+		sourceColumn: duration_weeks
+
+		annotation SummarizationSetBy = Automatic
+
+	column planned_uplift_pct
+		dataType: double
+		lineageTag: 77f1ec03-3b0c-4401-8d39-d3f704f5ba30
+		summarizeBy: sum
+		sourceColumn: planned_uplift_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column promo_cases
+		dataType: int64
+		formatString: 0
+		lineageTag: 71b9fc08-ee9d-4a94-8114-bad74f6e62d5
+		summarizeBy: sum
+		sourceColumn: promo_cases
+
+		annotation SummarizationSetBy = Automatic
+
+	column promo_net_eur
+		dataType: double
+		lineageTag: f771a16f-9c38-41df-ab39-d3d19f420ed5
+		summarizeBy: sum
+		sourceColumn: promo_net_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column promo_cogs_eur
+		dataType: double
+		lineageTag: 8f2b31e9-be10-4c34-a78e-93f3fdaee3f0
+		summarizeBy: sum
+		sourceColumn: promo_cogs_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column baseline_cases
+		dataType: double
+		lineageTag: cb023527-50b8-41f4-944b-7c5ec667f5e8
+		summarizeBy: sum
+		sourceColumn: baseline_cases
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column baseline_net_eur
+		dataType: double
+		lineageTag: 518cd1dc-f432-44c0-ac7b-b5d3880c2ab3
+		summarizeBy: sum
+		sourceColumn: baseline_net_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column country_code
+		dataType: string
+		isHidden
+		lineageTag: 0de5b11b-2fca-4214-b320-4b60c7eb7a36
+		summarizeBy: none
+		sourceColumn: country_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column channel
+		dataType: string
+		isHidden
+		lineageTag: f9ea9bf3-dd9e-4994-9769-8947fc9e42a5
+		summarizeBy: none
+		sourceColumn: channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column uplift_pct
+		dataType: double
+		lineageTag: 8612811e-5e1c-44a8-bd68-cef66873079e
+		summarizeBy: sum
+		sourceColumn: uplift_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column incremental_net_eur
+		dataType: double
+		lineageTag: 021ad8f8-fbf6-473d-a8f5-229150a4ee48
+		summarizeBy: sum
+		sourceColumn: incremental_net_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column discount_cost_eur
+		dataType: double
+		lineageTag: 88d6500f-ef99-4311-8d8e-26392f748524
+		summarizeBy: sum
+		sourceColumn: discount_cost_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column promo_roi
+		dataType: double
+		lineageTag: 09c436aa-a4fa-47ee-b7b0-0c6cd6afee8e
+		summarizeBy: sum
+		sourceColumn: promo_roi
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition mart_promo_performance = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    gold_Schema = nestle_dev_Database{[Name="gold",Kind="Schema"]}[Data],
+				    mart_promo_performance_Table = gold_Schema{[Name="mart_promo_performance",Kind="Table"]}[Data]
+				in
+				    mart_promo_performance_Table
+

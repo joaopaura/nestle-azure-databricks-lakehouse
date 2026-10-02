@@ -1,0 +1,71 @@
+table dim_customer
+	lineageTag: e250122d-ca84-4f38-b9b1-9898609038f0
+
+	column customer_id
+		dataType: string
+		lineageTag: e2da18c6-1caa-481e-a759-ca6e350765f7
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_name
+		dataType: string
+		lineageTag: e4536fa5-2895-4c6a-9b40-4b31a6080be2
+		summarizeBy: none
+		sourceColumn: customer_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column country_code
+		dataType: string
+		lineageTag: d9e108f3-63b3-495b-a27e-cc7660683599
+		summarizeBy: none
+		sourceColumn: country_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column channel
+		dataType: string
+		lineageTag: 745d2e0e-5892-4634-9747-621802eade06
+		summarizeBy: none
+		sourceColumn: channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_type
+		dataType: string
+		lineageTag: 30f77d2e-6517-4c8d-ba6e-8857b67a6a87
+		summarizeBy: none
+		sourceColumn: customer_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column key_account_manager
+		dataType: string
+		lineageTag: 8663f04f-46ca-433e-8c34-f32b60ce5352
+		summarizeBy: none
+		sourceColumn: key_account_manager
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_distributor
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 56a787e4-205c-457a-85b1-0adf3733f760
+		summarizeBy: none
+		sourceColumn: is_distributor
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_customer = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    gold_Schema = nestle_dev_Database{[Name="gold",Kind="Schema"]}[Data],
+				    dim_customer_Table = gold_Schema{[Name="dim_customer",Kind="Table"]}[Data]
+				in
+				    dim_customer_Table
+

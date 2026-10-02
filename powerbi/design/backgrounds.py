@@ -134,7 +134,7 @@ PAGES = {
         slicers=["Year", "Country", "Category", "Channel"],
         kpis=["Net sales", "Organic growth", "Real internal growth (RIG)", "Pricing", "Gross margin", "Volume (tonnes)"],
         panels=[(TWO[0][0], ROW2_Y, TWO[0][1], ROW2_H, "Net sales trend", "EUR m per month, current vs prior year", ""),
-                (TWO[1][0], ROW2_Y, TWO[1][1], ROW2_H, "Organic growth bridge", "Prior year to current year: RIG, pricing, FX and mix, EUR m", ""),
+                (TWO[1][0], ROW2_Y, TWO[1][1], ROW2_H, "Organic growth bridge", "Prior year to current year: volume (RIG), pricing and FX, EUR m", ""),
                 (THREE[0][0], ROW3_Y, THREE[0][1], ROW3_H, "Net sales by category", "EUR m and organic growth, selected period", ""),
                 (THREE[1][0], ROW3_Y, THREE[1][1], ROW3_H, "Net sales by country", "EUR m, top 12 markets", ""),
                 (THREE[2][0], ROW3_Y, THREE[2][1], ROW3_H, "Channel mix", "Share of net sales by channel", "")]),
@@ -144,17 +144,17 @@ PAGES = {
         slicers=["Year", "Country", "Category", "Channel"],
         kpis=["Forecast accuracy", "MAPE", "Bias", "Sell-out", "Sell-through", "Promo uplift"],
         panels=[(TWO[0][0], ROW2_Y, TWO[0][1], ROW2_H, "Actual vs forecast", "Volume per week, tonnes | test period and next 12 weeks", ""),
-                (TWO[1][0], ROW2_Y, TWO[1][1], ROW2_H, "Sell-in vs sell-out", "EUR m per month | gap = stock building at distributors", ""),
+                (TWO[1][0], ROW2_Y, TWO[1][1], ROW2_H, "Sell-in vs sell-out", "Thousand cases per month, distributors | gap = stock building", ""),
                 (THREE[0][0], ROW3_Y, THREE[0][1], ROW3_H, "Forecast error by category", "MAPE on the test period, lower is better", ""),
-                (THREE[1][0], ROW3_Y, THREE[1][1], ROW3_H, "Stock cover by distributor", "Weeks of stock at period end, target 3 to 5 weeks", ""),
+                (THREE[1][0], ROW3_Y, THREE[1][1], ROW3_H, "Stock cover by distributor", "Top 12 distributors, weeks of stock at period end | red = 30% above network", ""),
                 (THREE[2][0], ROW3_Y, THREE[2][1], ROW3_H, "Promo uplift by category", "Incremental volume vs baseline, %", "")]),
     "04_platform_dq": dict(
         nav=3, title="Platform &amp; Data Quality <span>|</span> Azure Databricks",
-        sub="Legacy ERP migrated to a governed lakehouse: medallion layers, expectations, reconciliation and cost",
+        sub="Legacy ERP migrated to a governed lakehouse: medallion layers, expectations, reconciliation and orchestration",
         slicers=["", "", "", ""],
-        kpis=["Pipeline runs", "Rows processed", "DQ expectations passed", "Reconciliation pass rate", "Last run duration", "Estimated DBU cost"],
-        panels=[(TWO[0][0], ROW2_Y, TWO[0][1], ROW2_H, "Rows by layer", "Bronze, silver and gold row counts per table, latest run", ""),
-                (TWO[1][0], ROW2_Y, TWO[1][1], ROW2_H, "Reconciliation Azure SQL vs Delta", "Row counts, sums and hashes per table, latest run", ""),
+        kpis=["Pipeline runs", "Rows processed", "DQ expectations passed", "Reconciliation pass rate", "Last run duration", "Delta tables"],
+        panels=[(TWO[0][0], ROW2_Y, TWO[0][1], ROW2_H, "Rows by layer", "Top 12 Delta tables by row count, colour = medallion layer", ""),
+                (TWO[1][0], ROW2_Y, TWO[1][1], ROW2_H, "Reconciliation Azure SQL vs Delta", "Row counts, content hashes and business totals, latest run", ""),
                 (48, ROW3_Y, 1208, ROW3_H, "Architecture", "End-to-end flow on Azure Databricks", arch()),
                 (THREE[2][0], ROW3_Y, THREE[2][1], ROW3_H, "Data quality expectations", "Passed and failed records per expectation, latest run", "")]),
 }
@@ -180,15 +180,15 @@ def cover() -> str:
         h += (f"<div class='abs' style='left:{x}px;top:690px;height:36px;width:{w}px;border-radius:18px;background:{T['blue_soft']};"
               f"color:{T['blue_dark']};font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center'>{c}</div>")
         x += w + 10
-    facts = [("[rows]", "rows across ERP, files and stream"), ("[tables]", "Delta tables in Unity Catalog"),
-             ("[diff]", "difference Azure SQL vs Delta"), ("[cost]", "total Azure spend")]
+    facts = [("", "rows in bronze (ERP, files, stream)"), ("", "Delta tables in Unity Catalog"),
+             ("", "difference Azure SQL vs Delta"), ("", "end-to-end pipeline run, 10 tasks")]
     for i, (big, small) in enumerate(facts):
         x = 48 + i * 262
-        h += (f"<div class='abs' style='left:{x}px;top:770px;width:240px'><div style='font-size:30px;font-weight:700;color:{T['ink']}'>{big}</div>"
+        h += (f"<div class='abs' style='left:{x}px;top:770px;width:240px;text-align:center'><div style='height:36px'></div>"
               f"<div style='font-size:13.5px;color:{T['ink2']};margin-top:4px'>{small}</div></div>")
     cards = [("Commercial", "Net sales, organic growth, RIG, pricing and margin"),
              ("Demand &amp; Sell-out", "Forecast vs actual, sell-in vs sell-out and promo uplift"),
-             ("Platform &amp; DQ", "Reconciliation, expectations, lineage and cost")]
+             ("Platform &amp; DQ", "Reconciliation, expectations, lineage and orchestration")]
     for i, (name, desc) in enumerate(cards):
         x = 1180 + (i % 2) * 358; y = 336 + (i // 2) * 170
         h += (f"<div class='abs card' style='left:{x}px;top:{y}px;width:334px;height:150px'>"

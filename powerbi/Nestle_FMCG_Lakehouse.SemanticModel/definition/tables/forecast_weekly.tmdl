@@ -1,0 +1,96 @@
+table forecast_weekly
+	lineageTag: c7cb3094-79aa-4010-9e70-8dd8bb09348c
+
+	column week_start
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 8d79df07-5326-4faf-ade4-f49b272adbf9
+		summarizeBy: none
+		sourceColumn: week_start
+
+		annotation SummarizationSetBy = Automatic
+
+	column country_code
+		dataType: string
+		isHidden
+		lineageTag: f0097731-fa1e-400e-90ce-a7d1b9b8cfd6
+		summarizeBy: none
+		sourceColumn: country_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		isHidden
+		lineageTag: a17e87fa-ce97-41c2-961b-bd217f407ba5
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column actual_t
+		dataType: double
+		lineageTag: 472b585b-73bb-4e4f-b8f8-ba1cf0fed6bc
+		summarizeBy: sum
+		sourceColumn: actual_t
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column forecast_t
+		dataType: double
+		lineageTag: 41bfc3df-20cb-46c7-b748-946a0bf3b89f
+		summarizeBy: sum
+		sourceColumn: forecast_t
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column baseline_t
+		dataType: double
+		lineageTag: d3dced9a-8a78-4610-bd6a-d8aa9e549f76
+		summarizeBy: sum
+		sourceColumn: baseline_t
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column is_future
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 5acb7f94-e2cc-422d-94f9-f3ee85f35a75
+		summarizeBy: none
+		sourceColumn: is_future
+
+		annotation SummarizationSetBy = Automatic
+
+	column model_version
+		dataType: string
+		lineageTag: 45a72cf4-7be5-40b9-bb42-e75e6b4c6f98
+		summarizeBy: none
+		sourceColumn: model_version
+
+		annotation SummarizationSetBy = Automatic
+
+	column mlflow_run_id
+		dataType: string
+		lineageTag: 2280265c-2a72-4195-b96d-1f7b1b95d192
+		summarizeBy: none
+		sourceColumn: mlflow_run_id
+
+		annotation SummarizationSetBy = Automatic
+
+	partition forecast_weekly = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    ml_Schema = nestle_dev_Database{[Name="ml",Kind="Schema"]}[Data],
+				    forecast_weekly_Table = ml_Schema{[Name="forecast_weekly",Kind="Table"]}[Data]
+				in
+				    forecast_weekly_Table
+

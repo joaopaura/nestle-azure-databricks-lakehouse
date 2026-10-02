@@ -1,0 +1,120 @@
+table dim_product
+	lineageTag: 8f13a916-7bea-409c-b3d0-008a1418764c
+
+	column sku
+		dataType: int64
+		formatString: 0
+		lineageTag: 694582be-ede1-4211-b499-79118e724394
+		summarizeBy: none
+		sourceColumn: sku
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_name
+		dataType: string
+		lineageTag: e549e34b-c88c-45d4-abbb-553204ecd86a
+		summarizeBy: none
+		sourceColumn: product_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column brand
+		dataType: string
+		lineageTag: 2cdf4b36-1fa6-450d-b5fc-8ad788122f2b
+		summarizeBy: none
+		sourceColumn: brand
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: 242dae4d-6238-4528-ad8d-7fda74ac02be
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column subcategory
+		dataType: string
+		lineageTag: cffe31c7-97b7-4205-b09f-b5424597e073
+		summarizeBy: none
+		sourceColumn: subcategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column pack_size
+		dataType: string
+		lineageTag: 1925acca-7fcc-46b1-9d7a-603fa57c0360
+		summarizeBy: none
+		sourceColumn: pack_size
+
+		annotation SummarizationSetBy = Automatic
+
+	column units_per_case
+		dataType: int64
+		formatString: 0
+		lineageTag: 4b319389-0377-4d14-b58e-e4e718fe3f7d
+		summarizeBy: none
+		sourceColumn: units_per_case
+
+		annotation SummarizationSetBy = Automatic
+
+	column case_weight_kg
+		dataType: double
+		lineageTag: 421d732a-948a-4200-b829-bd45d04181f1
+		summarizeBy: none
+		sourceColumn: case_weight_kg
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ean
+		dataType: string
+		lineageTag: b393f7e2-2ffa-4e71-a90f-aaa246907440
+		summarizeBy: none
+		sourceColumn: ean
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: 804d66fe-6aea-4b83-8db8-761fdf8b754a
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column launch_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 374ed876-0563-4f10-9dcc-26d314560c63
+		summarizeBy: none
+		sourceColumn: launch_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column discontinued_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3329d7a6-bdff-4fed-b2cd-91b90811bc3e
+		summarizeBy: none
+		sourceColumn: discontinued_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition dim_product = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    gold_Schema = nestle_dev_Database{[Name="gold",Kind="Schema"]}[Data],
+				    dim_product_Table = gold_Schema{[Name="dim_product",Kind="Table"]}[Data]
+				in
+				    dim_product_Table
+

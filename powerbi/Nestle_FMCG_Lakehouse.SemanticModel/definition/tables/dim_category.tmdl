@@ -1,0 +1,17 @@
+table dim_category
+	lineageTag: e9a78165-e3b8-53c2-a3c8-dcbf94e8bc77
+
+	column category
+		dataType: string
+		lineageTag: c7656d65-8d70-550d-ad2c-3e91cd9bb5bf
+		summarizeBy: none
+		sourceColumn: [category]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_category = calculated
+		mode: import
+		source = DISTINCT ( SELECTCOLUMNS ( dim_product, "category", dim_product[category] ) )
+
+	annotation PBI_Id = 4299a76f4ab8574fa36f0ba7768da69f
+

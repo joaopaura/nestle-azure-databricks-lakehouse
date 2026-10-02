@@ -1,0 +1,17 @@
+table dim_channel
+	lineageTag: a20a710a-d7c7-50d3-9438-cabe860ddafb
+
+	column channel
+		dataType: string
+		lineageTag: 9ead9676-040a-5365-bea1-812da8b3205d
+		summarizeBy: none
+		sourceColumn: [channel]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_channel = calculated
+		mode: import
+		source = DISTINCT ( SELECTCOLUMNS ( dim_customer, "channel", dim_customer[channel] ) )
+
+	annotation PBI_Id = 161e41534f6e5da0adf3b6e6315b4e80
+

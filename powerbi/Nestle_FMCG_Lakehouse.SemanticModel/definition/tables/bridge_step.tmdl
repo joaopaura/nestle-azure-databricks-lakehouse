@@ -1,0 +1,27 @@
+table bridge_step
+	lineageTag: 524366e3-1932-5362-9b4f-a0d29cea02c7
+
+	column step
+		dataType: string
+		lineageTag: 82eefdc5-5fd8-5b67-831d-6da8c6c8ab7c
+		summarizeBy: none
+		sourceColumn: [step]
+		sortByColumn: step_order
+
+		annotation SummarizationSetBy = Automatic
+
+	column step_order
+		dataType: int64
+		isHidden
+		lineageTag: b85af14a-1e25-56f2-a08e-8c4f4c8889fa
+		summarizeBy: none
+		sourceColumn: [step_order]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bridge_step = calculated
+		mode: import
+		source = DATATABLE ( "step", STRING, "step_order", INTEGER, { { "Net sales PY", 1 }, { "Volume (RIG)", 2 }, { "Pricing", 3 }, { "FX", 4 } } )
+
+	annotation PBI_Id = 4a4dba75807456ed92a8309194168021
+

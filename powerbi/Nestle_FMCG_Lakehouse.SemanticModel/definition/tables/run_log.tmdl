@@ -1,0 +1,107 @@
+table run_log
+	lineageTag: 86a27fe6-2b11-4c1f-9065-9b9496adb84d
+
+	column run_id
+		dataType: string
+		lineageTag: 417ee56c-c77e-4876-8d8b-e645eaab253f
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column layer
+		dataType: string
+		lineageTag: 50be8a9c-f042-47bc-8374-0125a2eab003
+		summarizeBy: none
+		sourceColumn: layer
+
+		annotation SummarizationSetBy = Automatic
+
+	column step
+		dataType: string
+		lineageTag: 3930c69b-0fd6-4b42-838a-48602a07010d
+		summarizeBy: none
+		sourceColumn: step
+
+		annotation SummarizationSetBy = Automatic
+
+	column target_table
+		dataType: string
+		lineageTag: 81f438f4-c1b3-4d9b-8046-4967031d631b
+		summarizeBy: none
+		sourceColumn: target_table
+
+		annotation SummarizationSetBy = Automatic
+
+	column rows_written
+		dataType: int64
+		formatString: 0
+		lineageTag: 536d5543-da44-4244-b0e2-e99b21efb408
+		summarizeBy: none
+		sourceColumn: rows_written
+
+		annotation SummarizationSetBy = Automatic
+
+	column started_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f672d831-373b-427e-bb1a-47da4ee5f76d
+		summarizeBy: none
+		sourceColumn: started_at
+
+		annotation SummarizationSetBy = Automatic
+
+	column ended_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 7d52cb85-7ee5-444d-b493-7fa330d907b7
+		summarizeBy: none
+		sourceColumn: ended_at
+
+		annotation SummarizationSetBy = Automatic
+
+	column duration_s
+		dataType: double
+		lineageTag: c0bd77a3-943b-429d-b3d1-fbf1433da90a
+		summarizeBy: none
+		sourceColumn: duration_s
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column status
+		dataType: string
+		lineageTag: 36ca9272-4323-40a6-a011-b4bd06d0dea1
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column message
+		dataType: string
+		lineageTag: 8526f7a3-e6e6-4d89-9925-ff6ac6bbe640
+		summarizeBy: none
+		sourceColumn: message
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_latest_run = VAR lastBronze = MAXX ( FILTER ( ALL ( run_log[layer], run_log[started_at] ), run_log[layer] = "bronze" ), run_log[started_at] ) VAR batchStart = MINX ( FILTER ( ALL ( run_log[layer], run_log[started_at] ), run_log[layer] = "bronze" && run_log[started_at] >= lastBronze - 15 / 1440 ), run_log[started_at] ) RETURN run_log[started_at] >= batchStart
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 5148f888-2f21-5024-b27b-717a38cb8188
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition run_log = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    ops_Schema = nestle_dev_Database{[Name="ops",Kind="Schema"]}[Data],
+				    run_log_Table = ops_Schema{[Name="run_log",Kind="Table"]}[Data]
+				in
+				    run_log_Table
+

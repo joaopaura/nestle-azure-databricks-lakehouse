@@ -1,0 +1,54 @@
+table dim_country
+	lineageTag: 85c53827-47cc-49f9-bc7c-24ba0a17d4f1
+
+	column country_code
+		dataType: string
+		lineageTag: dd7fa795-0640-4d00-a563-b3df68306de4
+		summarizeBy: none
+		sourceColumn: country_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column country_name
+		dataType: string
+		lineageTag: 68f5b8bc-cb32-43ef-8a8d-af199d78c8bd
+		summarizeBy: none
+		sourceColumn: country_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column currency
+		dataType: string
+		lineageTag: 657fa897-fa20-458c-965e-f6b37fb13ff7
+		summarizeBy: none
+		sourceColumn: currency
+
+		annotation SummarizationSetBy = Automatic
+
+	column region
+		dataType: string
+		lineageTag: 3224359d-680c-4f5f-88da-4f86c64aa56f
+		summarizeBy: none
+		sourceColumn: region
+
+		annotation SummarizationSetBy = Automatic
+
+	column capital
+		dataType: string
+		lineageTag: 32229f7f-4a33-4c52-a7da-b517c60465b5
+		summarizeBy: none
+		sourceColumn: capital
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_country = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    gold_Schema = nestle_dev_Database{[Name="gold",Kind="Schema"]}[Data],
+				    dim_country_Table = gold_Schema{[Name="dim_country",Kind="Table"]}[Data]
+				in
+				    dim_country_Table
+

@@ -1,0 +1,141 @@
+table mart_sales_monthly
+	lineageTag: f300114e-b5f7-4d79-b490-4a87c33254f6
+
+	column month_start
+		dataType: dateTime
+		isHidden
+		formatString: dd mmm yyyy
+		lineageTag: 9710fb5b-e58e-4432-8509-647128aa9b08
+		summarizeBy: none
+		sourceColumn: month_start
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column country_code
+		dataType: string
+		isHidden
+		lineageTag: 68f394ae-ebb8-4eb2-8654-51cb5052378b
+		summarizeBy: none
+		sourceColumn: country_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column channel
+		dataType: string
+		isHidden
+		lineageTag: e818614b-6a82-4651-bf4c-6935e152d16e
+		summarizeBy: none
+		sourceColumn: channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column sku
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: efc6d43d-c67c-4212-88f3-e4118ccdab15
+		summarizeBy: none
+		sourceColumn: sku
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		isHidden
+		lineageTag: 3dbe6de8-f02c-4e51-8853-ff742c2ba854
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column cases
+		dataType: int64
+		formatString: 0
+		lineageTag: 0cfa2b07-bdfb-4284-a25e-dc75aeb11203
+		summarizeBy: sum
+		sourceColumn: cases
+
+		annotation SummarizationSetBy = Automatic
+
+	column volume_t
+		dataType: double
+		lineageTag: ed01a459-b02a-4c9a-a28b-0dc6cb8776b6
+		summarizeBy: sum
+		sourceColumn: volume_t
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column gross_sales_eur
+		dataType: double
+		lineageTag: 62769dac-a135-4710-b5cb-4522d3f75b44
+		summarizeBy: sum
+		sourceColumn: gross_sales_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column net_sales_eur
+		dataType: double
+		lineageTag: 1c31fd51-2918-4355-99c5-0a75e91006ce
+		summarizeBy: sum
+		sourceColumn: net_sales_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column net_sales_cfx_eur
+		dataType: double
+		lineageTag: 5f03dc6f-be19-4931-a1cf-41a507d48c99
+		summarizeBy: sum
+		sourceColumn: net_sales_cfx_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column cogs_eur
+		dataType: double
+		lineageTag: e9360b22-0c16-4e23-8b0f-3d05d18fc01d
+		summarizeBy: sum
+		sourceColumn: cogs_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column promo_net_sales_eur
+		dataType: double
+		lineageTag: f4697cd4-3207-4b95-af25-82fd51480c19
+		summarizeBy: sum
+		sourceColumn: promo_net_sales_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column order_lines
+		dataType: int64
+		formatString: 0
+		lineageTag: 6e574754-23cd-44b3-9912-a5237082d5c1
+		summarizeBy: sum
+		sourceColumn: order_lines
+
+		annotation SummarizationSetBy = Automatic
+
+	partition mart_sales_monthly = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    gold_Schema = nestle_dev_Database{[Name="gold",Kind="Schema"]}[Data],
+				    mart_sales_monthly_Table = gold_Schema{[Name="mart_sales_monthly",Kind="Table"]}[Data]
+				in
+				    mart_sales_monthly_Table
+

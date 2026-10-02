@@ -1,0 +1,103 @@
+table reconciliation_results
+	lineageTag: 539a1140-2a00-4f9d-b649-87675ae3553e
+
+	column run_id
+		dataType: string
+		lineageTag: f2147c92-cf9a-4b88-b5c6-f33767d9beef
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column check_level
+		dataType: string
+		lineageTag: 5f068124-20e0-49ba-a2b8-8435c00788cb
+		summarizeBy: none
+		sourceColumn: check_level
+
+		annotation SummarizationSetBy = Automatic
+
+	column object_name
+		dataType: string
+		lineageTag: ab7d04eb-7d11-41a3-b60a-0583fd0c3a0d
+		summarizeBy: none
+		sourceColumn: object_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column check_name
+		dataType: string
+		lineageTag: cb8214a3-df75-45bc-84b3-901358e7dfa7
+		summarizeBy: none
+		sourceColumn: check_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column source_value
+		dataType: double
+		lineageTag: 87e054b2-f7ca-4fd8-abeb-35ca33b1ce51
+		summarizeBy: none
+		sourceColumn: source_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column target_value
+		dataType: double
+		lineageTag: 2ba15ee2-f430-4f66-9305-73e3dfadf63d
+		summarizeBy: none
+		sourceColumn: target_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column difference
+		dataType: double
+		lineageTag: b98799f6-b11e-47e9-8f92-8d9c458a832b
+		summarizeBy: none
+		sourceColumn: difference
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column status
+		dataType: string
+		lineageTag: 1d9c2ccf-623e-4daf-88d6-17548df41908
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column checked_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 4d0d5d4a-109e-42fc-a8c3-e8be6a17b852
+		summarizeBy: none
+		sourceColumn: checked_at
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_latest_run = VAR lastRun = CONCATENATEX ( TOPN ( 1, ALL ( reconciliation_results[run_id], reconciliation_results[checked_at] ), reconciliation_results[checked_at], DESC ), reconciliation_results[run_id] ) RETURN reconciliation_results[run_id] = lastRun
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 20e83fab-9af5-5230-af12-a0e55488f193
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition reconciliation_results = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    ops_Schema = nestle_dev_Database{[Name="ops",Kind="Schema"]}[Data],
+				    reconciliation_results_Table = ops_Schema{[Name="reconciliation_results",Kind="Table"]}[Data]
+				in
+				    reconciliation_results_Table
+
+	annotation PBI_ResultType = Table
+

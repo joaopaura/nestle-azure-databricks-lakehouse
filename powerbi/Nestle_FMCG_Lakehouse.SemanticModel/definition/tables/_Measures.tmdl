@@ -1,0 +1,487 @@
+table _Measures
+	lineageTag: a2fdcc72-d590-5b1f-bb83-6f2c677673a2
+
+	/// Last day of the last month with sell-in data. Prior-year comparisons use the same months.
+	measure 'Last Data Date' = CALCULATE ( EOMONTH ( MAX ( mart_sales_monthly[month_start] ), 0 ), REMOVEFILTERS () )
+		formatString: dd mmm yyyy
+		displayFolder: 00 Base
+		lineageTag: 9aca7e50-1aca-53c5-98d0-db6b78c551b5
+
+	/// Last pipeline step logged in ops.run_log.
+	measure 'Data As Of' = FORMAT ( CALCULATE ( MAX ( run_log[ended_at] ), REMOVEFILTERS () ), "dd mmm yyyy", "en-US" )
+		displayFolder: 00 Base
+		lineageTag: 561f2795-f712-50f1-9ea9-6105af9c97c7
+
+	/// Neutral font colour.
+	measure 'Neutral Colour' = "#5B6B7B"
+		displayFolder: 99 Formatting
+		lineageTag: bb3f3b12-f725-566b-9923-0f41cd64e882
+
+	/// Net sales in EUR at daily ECB rates (reportable orders only).
+	measure 'Net Sales' = SUM ( mart_sales_monthly[net_sales_eur] )
+		formatString: €#,0
+		displayFolder: 01 Commercial
+		lineageTag: 45921a34-fc43-5d45-92ba-8a74708745aa
+
+	/// Net sales in EUR million.
+	measure 'Net Sales (€m)' = DIVIDE ( [Net Sales], 1e6 )
+		formatString: €#,0.0\m
+		displayFolder: 01 Commercial
+		lineageTag: 1cdb2f67-ecfd-5c7c-8369-47c04c019efd
+
+	/// Net Sales in the same months of the prior year (only months with data in the current year).
+	measure 'Net Sales PY' = VAR last = [Last Data Date] RETURN CALCULATE ( [Net Sales], SAMEPERIODLASTYEAR ( FILTER ( VALUES ( dim_date[date] ), dim_date[date] <= last ) ) )
+		formatString: €#,0
+		displayFolder: 01 Commercial
+		lineageTag: fea1226c-0013-59c8-96cd-5b25b7e13b1a
+
+	/// Change of Net Sales vs prior year.
+	measure 'Net Sales YoY %' = IF ( ISBLANK ( [Net Sales PY] ), BLANK (), DIVIDE ( [Net Sales] - [Net Sales PY], [Net Sales PY] ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Commercial
+		lineageTag: bade9d96-fbc7-56d1-9641-2ed2416e6b3d
+
+	/// Font colour for Net Sales YoY %.
+	measure 'Net Sales YoY % Colour' = IF ( [Net Sales YoY %] >= 0, "#2E7D4F", "#C2402E" )
+		displayFolder: 99 Formatting
+		lineageTag: fd33da17-f057-5490-9ef6-6137b0dce6b8
+
+	/// Net sales of the prior year in EUR million.
+	measure 'Net Sales (€m) PY' = DIVIDE ( [Net Sales PY], 1e6 )
+		formatString: €#,0.0\m
+		displayFolder: 01 Commercial
+		lineageTag: 2f0b60c3-2490-52e1-9ae8-8f6a1230e379
+
+	/// Net sales at constant FX (local currency at the 2022 average ECB rate).
+	measure 'Net Sales CFX' = SUM ( mart_sales_monthly[net_sales_cfx_eur] )
+		formatString: €#,0
+		displayFolder: 01 Commercial
+		lineageTag: 57d6b7c5-66a4-54b2-997c-31dfea706af9
+
+	/// Net sales at constant FX, prior year.
+	measure 'Net Sales CFX PY' = VAR last = [Last Data Date] RETURN CALCULATE ( [Net Sales CFX], SAMEPERIODLASTYEAR ( FILTER ( VALUES ( dim_date[date] ), dim_date[date] <= last ) ) )
+		formatString: €#,0
+		displayFolder: 01 Commercial
+		lineageTag: 99c4c099-b80d-5137-b45e-7ebbf7da72f5
+
+	/// Volume in tonnes (pack size valid on the order date).
+	measure 'Volume (t)' = SUM ( mart_sales_monthly[volume_t] )
+		formatString: #,0
+		displayFolder: 01 Commercial
+		lineageTag: 705c3636-acc2-5d2d-98b8-cbc66548bc0b
+
+	/// Volume in thousand tonnes.
+	measure 'Volume (kt)' = DIVIDE ( [Volume (t)], 1000 )
+		formatString: #,0.0\ \k\t
+		displayFolder: 01 Commercial
+		lineageTag: 0d15eb4d-ec39-528a-ae65-51d77170ceeb
+
+	/// Volume (kt) in the same months of the prior year (only months with data in the current year).
+	measure 'Volume (kt) PY' = VAR last = [Last Data Date] RETURN CALCULATE ( [Volume (kt)], SAMEPERIODLASTYEAR ( FILTER ( VALUES ( dim_date[date] ), dim_date[date] <= last ) ) )
+		formatString: #,0.0\ \k\t
+		displayFolder: 01 Commercial
+		lineageTag: 122c59bd-b2a0-5d31-b40c-135c3661f3a4
+
+	/// Change of Volume (kt) vs prior year.
+	measure 'Volume (kt) YoY %' = IF ( ISBLANK ( [Volume (kt) PY] ), BLANK (), DIVIDE ( [Volume (kt)] - [Volume (kt) PY], [Volume (kt) PY] ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Commercial
+		lineageTag: ca4ecee7-a492-560d-bb4f-163d8522aad0
+
+	/// Font colour for Volume (kt) YoY %.
+	measure 'Volume (kt) YoY % Colour' = IF ( [Volume (kt) YoY %] >= 0, "#2E7D4F", "#C2402E" )
+		displayFolder: 99 Formatting
+		lineageTag: a12995e2-6dc7-5265-b0bc-e464d7c5e615
+
+	/// Volume in tonnes, prior year.
+	measure 'Volume (t) PY' = VAR last = [Last Data Date] RETURN CALCULATE ( [Volume (t)], SAMEPERIODLASTYEAR ( FILTER ( VALUES ( dim_date[date] ), dim_date[date] <= last ) ) )
+		formatString: #,0
+		displayFolder: 01 Commercial
+		lineageTag: 6f5927b9-1ade-597e-b234-9391f9a3f20f
+
+	/// Net sales growth in EUR, including currency effects.
+	measure 'Reported Growth' = IF ( ISBLANK ( [Net Sales PY] ), BLANK (), DIVIDE ( [Net Sales], [Net Sales PY] ) - 1 )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Commercial
+		lineageTag: 242844c7-3bb2-52c6-a795-5227b12a7af7
+
+	/// Growth at constant FX: real internal growth (volume) plus pricing.
+	measure 'Organic Growth' = IF ( ISBLANK ( [Net Sales CFX PY] ), BLANK (), DIVIDE ( [Net Sales CFX], [Net Sales CFX PY] ) - 1 )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Commercial
+		lineageTag: ef49b279-3bd7-5b1a-b9b3-330933e54340
+
+	/// Real internal growth: volume growth in tonnes.
+	measure 'RIG' = IF ( ISBLANK ( [Volume (t) PY] ), BLANK (), DIVIDE ( [Volume (t)], [Volume (t) PY] ) - 1 )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Commercial
+		lineageTag: 5db458e4-da56-5c35-b278-70c2edf8e092
+
+	/// Pricing contribution = organic growth - RIG.
+	measure 'Pricing' = IF ( ISBLANK ( [RIG] ), BLANK (), [Organic Growth] - [RIG] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Commercial
+		lineageTag: 96fbf86c-2641-57ae-8691-3ce1916a50a3
+
+	/// Currency effect = reported growth - organic growth.
+	measure 'FX Effect' = IF ( ISBLANK ( [Organic Growth] ), BLANK (), [Reported Growth] - [Organic Growth] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Commercial
+		lineageTag: cfa2b1e1-b988-5519-b23e-15226bf9df16
+
+	/// Organic Growth of the prior year.
+	measure 'Organic Growth PY' = VAR last = [Last Data Date] RETURN CALCULATE ( [Organic Growth], SAMEPERIODLASTYEAR ( FILTER ( VALUES ( dim_date[date] ), dim_date[date] <= last ) ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Commercial
+		lineageTag: 5272b355-6036-5883-b42c-51a9a89886bc
+
+	/// Font colour for Organic Growth.
+	measure 'Organic Growth Colour' = IF ( [Organic Growth] >= 0, "#2E7D4F", "#C2402E" )
+		displayFolder: 99 Formatting
+		lineageTag: abe946ad-93d0-5000-956a-37b80a6d634e
+
+	/// RIG of the prior year.
+	measure 'RIG PY' = VAR last = [Last Data Date] RETURN CALCULATE ( [RIG], SAMEPERIODLASTYEAR ( FILTER ( VALUES ( dim_date[date] ), dim_date[date] <= last ) ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Commercial
+		lineageTag: 03b18882-a5bb-5b84-a4e8-f737dbd29e79
+
+	/// Font colour for RIG.
+	measure 'RIG Colour' = IF ( [RIG] >= 0, "#2E7D4F", "#C2402E" )
+		displayFolder: 99 Formatting
+		lineageTag: 052f60d5-13e7-59c8-a45c-13ac106f12ff
+
+	/// Pricing of the prior year.
+	measure 'Pricing PY' = VAR last = [Last Data Date] RETURN CALCULATE ( [Pricing], SAMEPERIODLASTYEAR ( FILTER ( VALUES ( dim_date[date] ), dim_date[date] <= last ) ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Commercial
+		lineageTag: 7d53c18c-9e2e-5a9e-8be2-617e3773186d
+
+	/// Font colour for Pricing.
+	measure 'Pricing Colour' = IF ( [Pricing] >= 0, "#2E7D4F", "#C2402E" )
+		displayFolder: 99 Formatting
+		lineageTag: 804acbec-d910-53a3-897f-85701b91f64e
+
+	/// Font colour for Reported Growth.
+	measure 'Reported Growth Colour' = IF ( [Reported Growth] >= 0, "#2E7D4F", "#C2402E" )
+		displayFolder: 99 Formatting
+		lineageTag: e99bc851-d6c3-5f6c-8f1a-cbac1c619366
+
+	/// Net sales minus standard cost, as a share of net sales.
+	measure 'Gross Margin' = DIVIDE ( [Net Sales] - SUM ( mart_sales_monthly[cogs_eur] ), [Net Sales] )
+		formatString: 0.0%
+		displayFolder: 01 Commercial
+		lineageTag: 9274fdcc-dc62-5728-9ff0-3734070dd0fa
+
+	/// Gross Margin in the same months of the prior year (only months with data in the current year).
+	measure 'Gross Margin PY' = VAR last = [Last Data Date] RETURN CALCULATE ( [Gross Margin], SAMEPERIODLASTYEAR ( FILTER ( VALUES ( dim_date[date] ), dim_date[date] <= last ) ) )
+		formatString: 0.0%
+		displayFolder: 01 Commercial
+		lineageTag: c4dff3ae-6696-5e52-bb33-4e90c8769d92
+
+	/// Change of Gross Margin vs prior year (percentage points).
+	measure 'Gross Margin vs PY' = IF ( ISBLANK ( [Gross Margin PY] ), BLANK (), ( [Gross Margin] - [Gross Margin PY] ) * 100 )
+		formatString: +0.0\ \p\p;-0.0\ \p\p;0.0\ \p\p
+		displayFolder: 01 Commercial
+		lineageTag: ac85e8cb-86cd-5888-8faf-8fd9e7c748e0
+
+	/// Font colour for Gross Margin vs PY.
+	measure 'Gross Margin vs PY Colour' = IF ( [Gross Margin vs PY] >= 0, "#2E7D4F", "#C2402E" )
+		displayFolder: 99 Formatting
+		lineageTag: f05db59d-7f67-5617-a072-a65010a7bc54
+
+	/// Organic growth bridge: prior-year net sales + volume + pricing + FX = current net sales (total bar).
+	measure 'Bridge Value (€m)' = VAR s = SELECTEDVALUE ( bridge_step[step] ) VAR p = [Net Sales PY] RETURN IF ( ISBLANK ( p ), BLANK (), DIVIDE ( SWITCH ( s, "Net sales PY", p, "Volume (RIG)", p * [RIG], "Pricing", p * [Pricing], "FX", [Net Sales] - p * ( 1 + [Organic Growth] ) ), 1e6 ) )
+		formatString: €#,0.0\m
+		displayFolder: 01 Commercial
+		lineageTag: f3de6e82-b7ea-557a-9894-31a4dfbb99d4
+
+	/// Share of net sales among the selected channels.
+	measure 'Net Sales Share' = DIVIDE ( [Net Sales], CALCULATE ( [Net Sales], ALLSELECTED ( dim_channel ) ) )
+		formatString: 0.0%
+		displayFolder: 01 Commercial
+		lineageTag: 7f0bc459-d810-50e0-801e-ff2f1d9270b1
+
+	/// Actual volume in tonnes, test period.
+	measure 'Actual (t)' = CALCULATE ( SUM ( forecast_weekly[actual_t] ), NOT forecast_weekly[is_future], REMOVEFILTERS ( dim_date ) )
+		formatString: #,0
+		displayFolder: 02 Forecast
+		lineageTag: 6e893bfb-d3ba-5468-bf40-17923410c9fe
+
+	/// Model forecast (HistGradientBoosting, MLflow), tonnes.
+	measure 'Forecast (t)' = CALCULATE ( SUM ( forecast_weekly[forecast_t] ), REMOVEFILTERS ( dim_date ) )
+		formatString: #,0
+		displayFolder: 02 Forecast
+		lineageTag: f9bed05b-1d7c-5c2f-b81e-e100dbba790d
+
+	/// Baseline: same week of the prior year, tonnes.
+	measure 'Seasonal Naive (t)' = CALCULATE ( SUM ( forecast_weekly[baseline_t] ), REMOVEFILTERS ( dim_date ) )
+		formatString: #,0
+		displayFolder: 02 Forecast
+		lineageTag: 3a1631ac-6923-54d3-a7cd-cf6b843919a3
+
+	/// 1 - WAPE on the test period (12 weeks), country x category x week.
+	measure 'Forecast Accuracy' = VAR err = CALCULATE ( SUMX ( FILTER ( forecast_weekly, NOT forecast_weekly[is_future] ), ABS ( forecast_weekly[actual_t] - forecast_weekly[forecast_t] ) ), REMOVEFILTERS ( dim_date ) ) RETURN IF ( ISBLANK ( [Actual (t)] ), BLANK (), 1 - DIVIDE ( err, [Actual (t)] ) )
+		formatString: 0.0%
+		displayFolder: 02 Forecast
+		lineageTag: be128e02-4a10-5817-8433-a34c9104e6d7
+
+	/// 1 - WAPE of the seasonal naive baseline.
+	measure 'Baseline Accuracy' = VAR err = CALCULATE ( SUMX ( FILTER ( forecast_weekly, NOT forecast_weekly[is_future] ), ABS ( forecast_weekly[actual_t] - forecast_weekly[baseline_t] ) ), REMOVEFILTERS ( dim_date ) ) RETURN IF ( ISBLANK ( [Actual (t)] ), BLANK (), 1 - DIVIDE ( err, [Actual (t)] ) )
+		formatString: 0.0%
+		displayFolder: 02 Forecast
+		lineageTag: 078cb29c-5002-5002-82e2-fd5257d6b2b9
+
+	/// Mean absolute percentage error, test period.
+	measure 'MAPE' = CALCULATE ( AVERAGEX ( FILTER ( forecast_weekly, NOT forecast_weekly[is_future] && forecast_weekly[actual_t] > 0 ), ABS ( forecast_weekly[actual_t] - forecast_weekly[forecast_t] ) / forecast_weekly[actual_t] ), REMOVEFILTERS ( dim_date ) )
+		formatString: 0.0%
+		displayFolder: 02 Forecast
+		lineageTag: 0531c6fa-d4be-5900-b765-a708a768a85b
+
+	/// MAPE of the seasonal naive baseline.
+	measure 'Baseline MAPE' = CALCULATE ( AVERAGEX ( FILTER ( forecast_weekly, NOT forecast_weekly[is_future] && forecast_weekly[actual_t] > 0 ), ABS ( forecast_weekly[actual_t] - forecast_weekly[baseline_t] ) / forecast_weekly[actual_t] ), REMOVEFILTERS ( dim_date ) )
+		formatString: 0.0%
+		displayFolder: 02 Forecast
+		lineageTag: 0a105824-e2a9-5d15-a713-acd1fcc21a27
+
+	/// Forecast minus actual as a share of actual (negative = under-forecast).
+	measure 'Bias' = DIVIDE ( CALCULATE ( SUMX ( FILTER ( forecast_weekly, NOT forecast_weekly[is_future] ), forecast_weekly[forecast_t] - forecast_weekly[actual_t] ), REMOVEFILTERS ( dim_date ) ), [Actual (t)] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 02 Forecast
+		lineageTag: bd9f127f-99ab-555c-ae94-f73522f2e137
+
+	/// Bias of the seasonal naive baseline.
+	measure 'Baseline Bias' = DIVIDE ( CALCULATE ( SUMX ( FILTER ( forecast_weekly, NOT forecast_weekly[is_future] ), forecast_weekly[baseline_t] - forecast_weekly[actual_t] ), REMOVEFILTERS ( dim_date ) ), [Actual (t)] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 02 Forecast
+		lineageTag: bfdab159-34f6-5fb9-8d18-24211c4402d3
+
+	/// Green when bias is within +/-5%.
+	measure 'Bias Colour' = IF ( ABS ( [Bias] ) <= 0.05, "#2E7D4F", "#D08A2E" )
+		displayFolder: 99 Formatting
+		lineageTag: afa93a39-4d0b-5a41-828b-f20cba88ce6e
+
+	/// Distributor sell-out in thousand cases (distributor files).
+	measure 'Sell-out (k cases)' = VAR last = [Last Data Date] RETURN CALCULATE ( DIVIDE ( SUM ( mart_sellin_sellout_weekly[sell_out_cases] ), 1000 ), KEEPFILTERS ( dim_date[date] <= last ) )
+		formatString: #,0\k
+		displayFolder: 03 Sell-out
+		lineageTag: d411182e-c144-54e0-869e-ad113ff12ad2
+
+	/// Sell-out (k cases) in the same months of the prior year (only months with data in the current year).
+	measure 'Sell-out (k cases) PY' = VAR last = [Last Data Date] RETURN CALCULATE ( [Sell-out (k cases)], SAMEPERIODLASTYEAR ( FILTER ( VALUES ( dim_date[date] ), dim_date[date] <= last ) ) )
+		formatString: #,0\k
+		displayFolder: 03 Sell-out
+		lineageTag: 7e6be8c5-a811-518f-83b4-573623ac50c9
+
+	/// Change of Sell-out (k cases) vs prior year.
+	measure 'Sell-out (k cases) YoY %' = IF ( ISBLANK ( [Sell-out (k cases) PY] ), BLANK (), DIVIDE ( [Sell-out (k cases)] - [Sell-out (k cases) PY], [Sell-out (k cases) PY] ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 03 Sell-out
+		lineageTag: efdb0728-5c99-55fa-b611-7bf7f7b3a27c
+
+	/// Font colour for Sell-out (k cases) YoY %.
+	measure 'Sell-out (k cases) YoY % Colour' = IF ( [Sell-out (k cases) YoY %] >= 0, "#2E7D4F", "#C2402E" )
+		displayFolder: 99 Formatting
+		lineageTag: fddbcce8-d0b6-55a9-a533-77fe448f1be4
+
+	/// Sell-in to distributors in thousand cases (ERP).
+	measure 'Sell-in (k cases)' = VAR last = [Last Data Date] RETURN CALCULATE ( DIVIDE ( SUM ( mart_sellin_sellout_weekly[sell_in_cases] ), 1000 ), KEEPFILTERS ( dim_date[date] <= last ) )
+		formatString: #,0\k
+		displayFolder: 03 Sell-out
+		lineageTag: f424e6d8-80fe-5361-a877-ece2d63d056a
+
+	/// Sell-out as a share of sell-in.
+	measure 'Sell-through' = DIVIDE ( [Sell-out (k cases)], [Sell-in (k cases)] )
+		formatString: 0.0%
+		displayFolder: 03 Sell-out
+		lineageTag: d1035eb2-55de-5ec4-8abb-e0417152ede4
+
+	/// Sell-through in the same months of the prior year (only months with data in the current year).
+	measure 'Sell-through PY' = VAR last = [Last Data Date] RETURN CALCULATE ( [Sell-through], SAMEPERIODLASTYEAR ( FILTER ( VALUES ( dim_date[date] ), dim_date[date] <= last ) ) )
+		formatString: 0.0%
+		displayFolder: 03 Sell-out
+		lineageTag: 14fcfeb8-3c6a-5de0-aed9-5b1ebdbe54d7
+
+	/// Change of Sell-through vs prior year (percentage points).
+	measure 'Sell-through vs PY' = IF ( ISBLANK ( [Sell-through PY] ), BLANK (), ( [Sell-through] - [Sell-through PY] ) * 100 )
+		formatString: +0.0\ \p\p;-0.0\ \p\p;0.0\ \p\p
+		displayFolder: 03 Sell-out
+		lineageTag: 57abaebe-d83e-5da3-b183-1e356c1d7971
+
+	/// Font colour for Sell-through vs PY.
+	measure 'Sell-through vs PY Colour' = IF ( [Sell-through vs PY] >= 0, "#2E7D4F", "#C2402E" )
+		displayFolder: 99 Formatting
+		lineageTag: 1eb35ae0-8704-5ec3-82d5-d17842df6007
+
+	/// Distributor stock at the last week of the period / average weekly sell-out of the last 4 weeks.
+	measure 'Stock Cover (weeks)' = VAR lastW = CALCULATE ( MAX ( mart_sellin_sellout_weekly[week_ending] ), NOT ISBLANK ( mart_sellin_sellout_weekly[stock_cases] ) ) RETURN DIVIDE ( CALCULATE ( SUM ( mart_sellin_sellout_weekly[stock_cases] ), mart_sellin_sellout_weekly[week_ending] = lastW ), CALCULATE ( SUM ( mart_sellin_sellout_weekly[sell_out_4w_avg] ), mart_sellin_sellout_weekly[week_ending] = lastW ) )
+		formatString: 0.0
+		displayFolder: 03 Sell-out
+		lineageTag: d07c98f0-ff86-5d91-aefb-bb4eae545e81
+
+	/// Stock cover of the 12 distributors with the highest cover.
+	measure 'Stock Cover Top 12' = IF ( RANKX ( ALLSELECTED ( mart_sellin_sellout_weekly[distributor_name] ), [Stock Cover (weeks)],, DESC ) <= 12, [Stock Cover (weeks)] )
+		formatString: 0.0
+		displayFolder: 03 Sell-out
+		lineageTag: 67f5f9be-c763-54fd-99b0-ce3e280cdfbe
+
+	/// Stock cover of all selected distributors together.
+	measure 'Network Stock Cover' = CALCULATE ( [Stock Cover (weeks)], ALLSELECTED ( mart_sellin_sellout_weekly[distributor_name] ) )
+		formatString: 0.0
+		displayFolder: 03 Sell-out
+		lineageTag: 7e78cb72-4e8e-5a7d-b321-fe63a57b0862
+
+	/// Red when a distributor holds 30% more weeks of stock than the network (overstock risk).
+	measure 'Stock Cover Colour' = IF ( [Stock Cover (weeks)] > 1.3 * [Network Stock Cover], "#C2402E", "#005BA5" )
+		displayFolder: 99 Formatting
+		lineageTag: 1cad8d1a-c82e-5f29-9d52-4d905cd18bff
+
+	/// Promotion volume vs baseline (average of the 8 weeks before the promotion).
+	measure 'Promo Uplift' = DIVIDE ( SUM ( mart_promo_performance[promo_cases] ), SUM ( mart_promo_performance[baseline_cases] ) ) - 1
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 03 Sell-out
+		lineageTag: 841b184d-b262-566c-8a82-899774c1e8b4
+
+	/// Average uplift planned by the key account managers.
+	measure 'Planned Uplift' = DIVIDE ( AVERAGE ( mart_promo_performance[planned_uplift_pct] ), 100 )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 03 Sell-out
+		lineageTag: e6c8e6f5-2210-5f56-a3eb-11c6802739d8
+
+	/// Green when the uplift beats the plan.
+	measure 'Promo Uplift Colour' = IF ( [Promo Uplift] >= [Planned Uplift], "#2E7D4F", "#D08A2E" )
+		displayFolder: 99 Formatting
+		lineageTag: c6768a1f-091d-5f25-b2e2-5016e9532226
+
+	/// Executions of the ingestion notebook (manual development run + Workflow job + ADF-triggered job).
+	measure 'Pipeline Runs' = CALCULATE ( DISTINCTCOUNT ( run_log[run_id] ), run_log[step] = "erp_snapshot", REMOVEFILTERS () )
+		formatString: #,0
+		displayFolder: 04 Platform
+		lineageTag: 946a5eb0-0640-5f14-826e-0b0806ac1d44
+
+	/// How the pipeline is orchestrated.
+	measure 'Orchestration' = "Workflow + ADF"
+		displayFolder: 04 Platform
+		lineageTag: c956efc1-a44d-567b-b088-f9cb68db81e9
+
+	/// Rows in the bronze layer (ERP extract, distributor files, public data, POS events), million.
+	measure 'Rows Processed (M)' = DIVIDE ( CALCULATE ( SUM ( platform_table_counts[row_count] ), platform_table_counts[layer] = "bronze", REMOVEFILTERS () ), 1e6 )
+		formatString: #,0.0\M
+		displayFolder: 04 Platform
+		lineageTag: 064dea59-29f1-550f-8ca4-9f028c33ac57
+
+	/// Rows in the silver layer, million.
+	measure 'Silver Rows (M)' = DIVIDE ( CALCULATE ( SUM ( platform_table_counts[row_count] ), platform_table_counts[layer] = "silver", REMOVEFILTERS () ), 1e6 )
+		formatString: #,0.0\M
+		displayFolder: 04 Platform
+		lineageTag: 36f42dfe-f99a-535f-bb5b-ab66ed4bba09
+
+	/// Delta tables in bronze, silver and gold (Unity Catalog).
+	measure 'Delta Tables' = CALCULATE ( COUNTROWS ( platform_table_counts ), REMOVEFILTERS () )
+		formatString: #,0
+		displayFolder: 04 Platform
+		lineageTag: 065d45dd-0e87-5e10-adac-cb7c76d0e7d6
+
+	/// Tables in the gold layer.
+	measure 'Gold Tables' = CALCULATE ( COUNTROWS ( platform_table_counts ), platform_table_counts[layer] = "gold", REMOVEFILTERS () )
+		formatString: #,0
+		displayFolder: 04 Platform
+		lineageTag: 7ed38036-059f-5e3f-9de6-aef869ddc773
+
+	/// Rows per Delta table.
+	measure 'Table Rows' = SUM ( platform_table_counts[row_count] )
+		formatString: #,0
+		displayFolder: 04 Platform
+		lineageTag: 3947fe7a-93c3-503d-9bd6-8113be95e1a2
+
+	/// Row count of the 12 largest Delta tables.
+	measure 'Rows Top 12' = IF ( RANKX ( ALL ( platform_table_counts[table_label] ), CALCULATE ( [Table Rows], REMOVEFILTERS ( platform_table_counts[layer] ) ),, DESC ) <= 12, [Table Rows] )
+		formatString: #,0
+		displayFolder: 04 Platform
+		lineageTag: 4e6da05a-b8ae-5d23-83d0-77d6702f1275
+
+	/// Row count of the 12 largest Delta tables, million.
+	measure 'Rows Top 12 (M)' = DIVIDE ( [Rows Top 12], 1e6 )
+		formatString: #,0.00\M
+		displayFolder: 04 Platform
+		lineageTag: 4c1d3628-12b6-57e8-9d4c-ed3576f8cdca
+
+	/// Data quality expectations evaluated in the latest pipeline run.
+	measure 'DQ Checks Total' = CALCULATE ( COUNTROWS ( dq_results ), dq_results[is_latest_run] = TRUE (), REMOVEFILTERS () )
+		formatString: #,0
+		displayFolder: 04 Platform
+		lineageTag: 6bc4c87c-f98c-5c5e-8f88-b3886faf5a1a
+
+	/// Failed expectations in the latest run.
+	measure 'DQ Checks Failed' = CALCULATE ( COUNTROWS ( dq_results ), dq_results[is_latest_run] = TRUE (), dq_results[status] <> "PASS", REMOVEFILTERS () ) + 0
+		formatString: #,0
+		displayFolder: 04 Platform
+		lineageTag: 1ce7ddb6-de0f-50cd-a665-6593e7a886a4
+
+	/// Passed vs total expectations in the latest run.
+	measure 'DQ Checks Passed' = FORMAT ( [DQ Checks Total] - [DQ Checks Failed], "0" ) & " / " & FORMAT ( [DQ Checks Total], "0" )
+		displayFolder: 04 Platform
+		lineageTag: e7d95754-6a5c-50ff-b0e9-c4ba10c98b76
+
+	/// Font colour.
+	measure 'DQ Failed Colour' = IF ( [DQ Checks Failed] > 0, "#D08A2E", "#2E7D4F" )
+		displayFolder: 99 Formatting
+		lineageTag: 7ad00132-e696-53d7-8f99-f60d54f4ffcc
+
+	/// Reconciliation checks Azure SQL vs Delta in the latest run (counts, hashes, business totals).
+	measure 'Recon Checks' = CALCULATE ( COUNTROWS ( reconciliation_results ), reconciliation_results[is_latest_run] = TRUE (), REMOVEFILTERS () )
+		formatString: #,0
+		displayFolder: 04 Platform
+		lineageTag: a6aa6673-9238-5cde-b53a-2cad2c7cdc6b
+
+	/// Passed reconciliation checks in the latest run.
+	measure 'Recon Checks Passed (n)' = CALCULATE ( COUNTROWS ( reconciliation_results ), reconciliation_results[is_latest_run] = TRUE (), reconciliation_results[status] = "PASS", REMOVEFILTERS () ) + 0
+		formatString: #,0
+		displayFolder: 04 Platform
+		lineageTag: a66b9fb8-8cf3-53a7-8e16-72da9970fa90
+
+	/// Passed vs total reconciliation checks.
+	measure 'Recon Checks Passed' = FORMAT ( [Recon Checks Passed (n)], "0" ) & " / " & FORMAT ( [Recon Checks], "0" )
+		displayFolder: 04 Platform
+		lineageTag: 211ba513-3eba-53de-ba61-9f4be79b7854
+
+	/// Share of reconciliation checks that passed.
+	measure 'Recon Pass Rate' = DIVIDE ( [Recon Checks Passed (n)], [Recon Checks] )
+		formatString: 0.0%
+		displayFolder: 04 Platform
+		lineageTag: 53270f59-1b42-5e39-bc79-5cce08e46439
+
+	/// Font colour.
+	measure 'Recon Colour' = IF ( [Recon Pass Rate] = 1, "#2E7D4F", "#C2402E" )
+		displayFolder: 99 Formatting
+		lineageTag: 67c31264-1c3b-5266-a3e3-64b93adc34cd
+
+	/// Sum of absolute differences between Azure SQL and Delta in the latest reconciliation.
+	measure 'Recon Difference' = CALCULATE ( SUMX ( reconciliation_results, ABS ( reconciliation_results[difference] ) ), reconciliation_results[is_latest_run] = TRUE (), REMOVEFILTERS () ) + 0
+		formatString: #,0
+		displayFolder: 04 Platform
+		lineageTag: 05357920-9ad8-58af-a450-affd86752094
+
+	/// Start of the latest pipeline run.
+	measure 'Last Run Start' = FORMAT ( CALCULATE ( MIN ( run_log[started_at] ), run_log[is_latest_run] = TRUE (), REMOVEFILTERS () ), "dd mmm, hh:nn", "en-US" ) & " UTC"
+		displayFolder: 04 Platform
+		lineageTag: 8b2865e0-1117-5d8c-8a81-46b5d54c26c9
+
+	/// Time from the first to the last logged step of the latest run (10 serverless tasks).
+	measure 'Last Run Duration' = VAR s = CALCULATE ( MIN ( run_log[started_at] ), run_log[is_latest_run] = TRUE (), REMOVEFILTERS () ) VAR e = CALCULATE ( MAX ( run_log[ended_at] ), run_log[is_latest_run] = TRUE (), REMOVEFILTERS () ) VAR sec = DATEDIFF ( s, e, SECOND ) RETURN INT ( sec / 60 ) & " min " & FORMAT ( MOD ( sec, 60 ), "00" ) & " s"
+		displayFolder: 04 Platform
+		lineageTag: 5b36476a-3b61-5eda-838d-a15c233ba27a
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				  Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Removed Columns" = Table.RemoveColumns(Source,{"Column1"})
+				in
+				  #"Removed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,37 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-GB
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["dim_date","dim_country","dim_product","dim_customer","mart_sales_monthly","mart_sellin_sellout_weekly","mart_promo_performance","mart_demand_weekly","mart_pos_daily","platform_table_counts","forecast_accuracy","forecast_weekly","run_log","dq_results","reconciliation_results","_Measures"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table dim_date
+ref table dim_country
+ref table dim_product
+ref table dim_customer
+ref table mart_sales_monthly
+ref table mart_sellin_sellout_weekly
+ref table mart_promo_performance
+ref table mart_demand_weekly
+ref table mart_pos_daily
+ref table platform_table_counts
+ref table forecast_accuracy
+ref table forecast_weekly
+ref table run_log
+ref table dq_results
+ref table reconciliation_results
+ref table dim_category
+ref table dim_channel
+ref table bridge_step
+ref table _Measures
+
+ref cultureInfo en-US
+

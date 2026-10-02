@@ -1,0 +1,119 @@
+table mart_sellin_sellout_weekly
+	lineageTag: aad804a4-879b-44d1-aa8c-ebb06a268ff5
+
+	column week_ending
+		dataType: dateTime
+		isHidden
+		formatString: dd mmm yyyy
+		lineageTag: 32af2f9a-175b-4f86-aa42-cf980722a1e5
+		summarizeBy: none
+		sourceColumn: week_ending
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column distributor_id
+		dataType: string
+		lineageTag: aed9a28d-6f13-4352-ab2a-60ca4f0b187d
+		summarizeBy: none
+		sourceColumn: distributor_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		isHidden
+		lineageTag: d1283230-847c-4645-a9eb-103d98a31200
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column sell_in_cases
+		dataType: int64
+		formatString: 0
+		lineageTag: 8e58ae70-cccf-4fc9-bf2a-12dd865c9e4b
+		summarizeBy: sum
+		sourceColumn: sell_in_cases
+
+		annotation SummarizationSetBy = Automatic
+
+	column sell_in_eur
+		dataType: double
+		lineageTag: b9dd88f5-6dcf-4240-b15e-adc53b150661
+		summarizeBy: sum
+		sourceColumn: sell_in_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column sell_out_cases
+		dataType: double
+		lineageTag: 59da38ca-2ed1-4152-b6d0-d3d60c3e26ef
+		summarizeBy: sum
+		sourceColumn: sell_out_cases
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column stock_cases
+		dataType: double
+		lineageTag: dfd33dde-999c-46b3-83db-a6ccc9d348e4
+		summarizeBy: sum
+		sourceColumn: stock_cases
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column country_code
+		dataType: string
+		isHidden
+		lineageTag: a85821ca-b815-4cd7-a458-849ff43937af
+		summarizeBy: none
+		sourceColumn: country_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column distributor_name
+		dataType: string
+		lineageTag: 12dd74ec-aa87-43bf-944b-b1910d40be2d
+		summarizeBy: none
+		sourceColumn: distributor_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column sell_out_4w_avg
+		dataType: double
+		lineageTag: 1ff5fde1-2ec1-448b-a794-5cccb4a8f83b
+		summarizeBy: sum
+		sourceColumn: sell_out_4w_avg
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column stock_cover_weeks
+		dataType: double
+		lineageTag: a608fbef-9532-4432-bf96-3b321f9a6632
+		summarizeBy: sum
+		sourceColumn: stock_cover_weeks
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition mart_sellin_sellout_weekly = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    gold_Schema = nestle_dev_Database{[Name="gold",Kind="Schema"]}[Data],
+				    mart_sellin_sellout_weekly_Table = gold_Schema{[Name="mart_sellin_sellout_weekly",Kind="Table"]}[Data]
+				in
+				    mart_sellin_sellout_weekly_Table
+

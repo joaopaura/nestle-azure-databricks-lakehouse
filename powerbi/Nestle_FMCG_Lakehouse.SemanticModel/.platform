@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Nestle_FMCG_Lakehouse"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "795dfd56-4796-4083-a657-41d1ccc921ea"
+  }
+}

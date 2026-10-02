@@ -1,0 +1,88 @@
+relationship 22f739fc-e483-5f0c-afcb-d562ed6ed207
+	fromColumn: mart_sales_monthly.month_start
+	toColumn: dim_date.date
+
+relationship ef06a8c7-2e77-56da-87af-6889e187c52e
+	fromColumn: mart_sales_monthly.country_code
+	toColumn: dim_country.country_code
+
+relationship 6a962e48-5589-5c74-b841-db1315fb948d
+	fromColumn: mart_sales_monthly.sku
+	toColumn: dim_product.sku
+
+relationship db4e0e83-6ad6-5ff9-86cb-4d2c888857c9
+	fromColumn: mart_sales_monthly.category
+	toColumn: dim_category.category
+
+relationship 0e7cb98b-b370-5c31-a61c-5811f33f80e3
+	fromColumn: mart_sales_monthly.channel
+	toColumn: dim_channel.channel
+
+relationship b23634db-589e-5854-aa4f-60352ed5454b
+	fromColumn: mart_sellin_sellout_weekly.week_ending
+	toColumn: dim_date.date
+
+relationship b0a17c24-8e7e-5a75-a3c7-c20a26635332
+	fromColumn: mart_sellin_sellout_weekly.country_code
+	toColumn: dim_country.country_code
+
+relationship d1beed0a-3911-5394-a9ad-96519a886fb0
+	fromColumn: mart_sellin_sellout_weekly.category
+	toColumn: dim_category.category
+
+relationship 351d5b6c-363c-5c1b-90c4-3cc992006b71
+	fromColumn: mart_promo_performance.start_date
+	toColumn: dim_date.date
+
+relationship 30450380-e747-5d77-bebe-33e3995e7edd
+	fromColumn: mart_promo_performance.country_code
+	toColumn: dim_country.country_code
+
+relationship b6641b4b-9b97-5b1d-8784-e2480d48ec53
+	fromColumn: mart_promo_performance.category
+	toColumn: dim_category.category
+
+relationship 6be207f8-e731-5218-b54a-42da9674d604
+	fromColumn: mart_promo_performance.channel
+	toColumn: dim_channel.channel
+
+relationship b35e92f5-7bb0-5522-9df4-9d6196f63935
+	fromColumn: mart_demand_weekly.week_start
+	toColumn: dim_date.date
+
+relationship 19cffbdd-2e49-5d36-88cf-d4f03d869f63
+	fromColumn: mart_demand_weekly.country_code
+	toColumn: dim_country.country_code
+
+relationship de22d731-efb0-5d07-81ed-277b7a8f255f
+	fromColumn: mart_demand_weekly.category
+	toColumn: dim_category.category
+
+relationship 21733fed-532a-532b-b3f9-f6e5880c0c59
+	fromColumn: forecast_weekly.week_start
+	toColumn: dim_date.date
+
+relationship 10a8604f-e52b-5112-a8dc-52da75b0366a
+	fromColumn: forecast_weekly.country_code
+	toColumn: dim_country.country_code
+
+relationship 3c858f9f-606c-5242-b825-ab2d024a2d47
+	fromColumn: forecast_weekly.category
+	toColumn: dim_category.category
+
+relationship 7df1fd0b-9816-506a-b81d-13e3ebff5e3b
+	fromColumn: mart_pos_daily.event_date
+	toColumn: dim_date.date
+
+relationship 1a65be0e-b13e-56dd-ba01-04349a3e1e47
+	fromColumn: mart_pos_daily.country
+	toColumn: dim_country.country_code
+
+relationship f99fa42e-cf25-5312-9ee4-fadb26e8c2ca
+	fromColumn: mart_pos_daily.category
+	toColumn: dim_category.category
+
+relationship 6552a19a-5a9c-58c1-9413-4bfd6925ddbc
+	fromColumn: dim_customer.country_code
+	toColumn: dim_country.country_code
+

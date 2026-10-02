@@ -1,0 +1,89 @@
+table mart_pos_daily
+	lineageTag: 852e720e-e5ae-47fd-94e6-793b45bdef5b
+
+	column event_date
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: 4cd589eb-67f2-4cbc-8146-bc37760735f8
+		summarizeBy: none
+		sourceColumn: event_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column country
+		dataType: string
+		isHidden
+		lineageTag: fbb62890-cb67-4395-9fcd-2a0bc5ddc639
+		summarizeBy: none
+		sourceColumn: country
+
+		annotation SummarizationSetBy = Automatic
+
+	column retailer_id
+		dataType: string
+		lineageTag: 2b9029a4-5d64-4507-ae60-1c91b08728e6
+		summarizeBy: none
+		sourceColumn: retailer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		isHidden
+		lineageTag: 786b281e-0ac9-4ed4-a8e9-ac8c677f86cf
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column net_units
+		dataType: int64
+		formatString: 0
+		lineageTag: a98a9bff-d231-47c9-b44b-396ba41ac49d
+		summarizeBy: sum
+		sourceColumn: net_units
+
+		annotation SummarizationSetBy = Automatic
+
+	column net_revenue_eur
+		dataType: double
+		lineageTag: 40060c95-451d-4601-91ee-1f8e583606e1
+		summarizeBy: sum
+		sourceColumn: net_revenue_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column events
+		dataType: int64
+		formatString: 0
+		lineageTag: 995974b5-60df-4e2e-98e4-3119e20f9bf2
+		summarizeBy: sum
+		sourceColumn: events
+
+		annotation SummarizationSetBy = Automatic
+
+	column events_with_device
+		dataType: int64
+		formatString: 0
+		lineageTag: d056681f-1bcf-4341-9804-3a6dc1a4b2c3
+		summarizeBy: sum
+		sourceColumn: events_with_device
+
+		annotation SummarizationSetBy = Automatic
+
+	partition mart_pos_daily = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    gold_Schema = nestle_dev_Database{[Name="gold",Kind="Schema"]}[Data],
+				    mart_pos_daily_Table = gold_Schema{[Name="mart_pos_daily",Kind="Table"]}[Data]
+				in
+				    mart_pos_daily_Table
+

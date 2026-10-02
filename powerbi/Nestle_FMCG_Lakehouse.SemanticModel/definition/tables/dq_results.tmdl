@@ -1,0 +1,117 @@
+table dq_results
+	lineageTag: e0083e9d-c705-42d7-9998-ee7d4d1e4856
+
+	column run_id
+		dataType: string
+		lineageTag: 80d60876-b753-4d2d-b086-05b215bc7ee0
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column layer
+		dataType: string
+		lineageTag: a213c286-9d01-4483-9994-a7e392bc10d2
+		summarizeBy: none
+		sourceColumn: layer
+
+		annotation SummarizationSetBy = Automatic
+
+	column table_name
+		dataType: string
+		lineageTag: 3f79bed8-0317-49b8-9fa4-883149d431e5
+		summarizeBy: none
+		sourceColumn: table_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column check_name
+		dataType: string
+		lineageTag: e04b4cdc-772e-4043-932a-46111e47b87e
+		summarizeBy: none
+		sourceColumn: check_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column failed_rows
+		dataType: int64
+		formatString: 0
+		lineageTag: 6351d48d-28fc-443f-9b60-818ad3e8fc0f
+		summarizeBy: none
+		sourceColumn: failed_rows
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_rows
+		dataType: int64
+		formatString: 0
+		lineageTag: 99d83363-dc15-4d69-9911-8db2d8626941
+		summarizeBy: none
+		sourceColumn: total_rows
+
+		annotation SummarizationSetBy = Automatic
+
+	column failed_pct
+		dataType: double
+		lineageTag: 906749d1-a31b-489c-b6bd-f1592619a945
+		summarizeBy: none
+		sourceColumn: failed_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column threshold_pct
+		dataType: double
+		lineageTag: 25acff9f-752b-482e-ad72-10fdc3f96933
+		summarizeBy: none
+		sourceColumn: threshold_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column status
+		dataType: string
+		lineageTag: fe0a235f-5b7e-4100-b56e-526c1d689be2
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column checked_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 012d0c3a-2c5a-4890-a6dc-cf6259e70838
+		summarizeBy: none
+		sourceColumn: checked_at
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_latest_run = VAR lastBronze = MAXX ( FILTER ( ALL ( run_log[layer], run_log[started_at] ), run_log[layer] = "bronze" ), run_log[started_at] ) VAR batchStart = MINX ( FILTER ( ALL ( run_log[layer], run_log[started_at] ), run_log[layer] = "bronze" && run_log[started_at] >= lastBronze - 15 / 1440 ), run_log[started_at] ) RETURN dq_results[checked_at] >= batchStart
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 08713571-6edd-5424-8dd6-0bc51ff88b2c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column failed_share = DIVIDE ( dq_results[failed_pct], 100 )
+		dataType: double
+		formatString: 0.00%
+		lineageTag: 011efdae-a89d-518c-8295-7b7b53d911b9
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dq_results = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    ops_Schema = nestle_dev_Database{[Name="ops",Kind="Schema"]}[Data],
+				    dq_results_Table = ops_Schema{[Name="dq_results",Kind="Table"]}[Data]
+				in
+				    dq_results_Table
+

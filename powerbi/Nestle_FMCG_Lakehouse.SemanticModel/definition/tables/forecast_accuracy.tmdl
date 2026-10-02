@@ -1,0 +1,68 @@
+table forecast_accuracy
+	lineageTag: 3d7d37e4-6173-4cd0-bd2e-7294bd42f721
+
+	column level
+		dataType: string
+		lineageTag: 2e0c7614-1fe5-4ad5-9b6b-a55fd911979d
+		summarizeBy: none
+		sourceColumn: level
+
+		annotation SummarizationSetBy = Automatic
+
+	column member
+		dataType: string
+		lineageTag: 9151de6c-e83e-4de7-81ba-4d391d4d84ea
+		summarizeBy: none
+		sourceColumn: member
+
+		annotation SummarizationSetBy = Automatic
+
+	column wape_pct
+		dataType: double
+		lineageTag: ae06cc7b-f6e6-4073-9a4d-cd76b4b8b218
+		summarizeBy: none
+		sourceColumn: wape_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column mape_pct
+		dataType: double
+		lineageTag: f8fa95ec-a60e-4d40-8c8a-a7d927ae01ff
+		summarizeBy: none
+		sourceColumn: mape_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column bias_pct
+		dataType: double
+		lineageTag: 67c78a24-688b-4737-9ca4-1da4d0504c50
+		summarizeBy: none
+		sourceColumn: bias_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column model_version
+		dataType: string
+		lineageTag: 3d636b93-0884-47c7-a11c-a3350857167d
+		summarizeBy: none
+		sourceColumn: model_version
+
+		annotation SummarizationSetBy = Automatic
+
+	partition forecast_accuracy = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    ml_Schema = nestle_dev_Database{[Name="ml",Kind="Schema"]}[Data],
+				    forecast_accuracy_Table = ml_Schema{[Name="forecast_accuracy",Kind="Table"]}[Data]
+				in
+				    forecast_accuracy_Table
+

@@ -1,0 +1,111 @@
+table dim_date
+	dataCategory: Time
+	lineageTag: 3738c55e-b6a1-4198-9b69-98a72d23800b
+
+	column date
+		dataType: dateTime
+		isKey
+		formatString: dd mmm yyyy
+		lineageTag: 7d0a6da7-f277-4568-945d-b8e3206ce714
+		summarizeBy: none
+		sourceColumn: date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 93b9f2a8-d831-440a-a225-c369d6b4b4d2
+		summarizeBy: none
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: 2c460b6d-c4cf-4f3e-a438-f89e0c1fe46c
+		summarizeBy: none
+		sourceColumn: quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: bfb86a9c-7d62-440b-8ed2-6fc8d5e2670e
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_name
+		dataType: string
+		sortByColumn: month
+		lineageTag: 6899dbdb-189e-4cf3-af84-5242beceedbd
+		summarizeBy: none
+		sourceColumn: month_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_start
+		dataType: dateTime
+		formatString: mmm yyyy
+		lineageTag: 641a40e1-a0c8-4560-af62-414cf6821dbe
+		summarizeBy: none
+		sourceColumn: month_start
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column week_start
+		dataType: dateTime
+		formatString: dd mmm yyyy
+		lineageTag: a4ce92fa-8475-4e95-8d4b-4a81c726a42d
+		summarizeBy: none
+		sourceColumn: week_start
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column iso_week
+		dataType: int64
+		formatString: 0
+		lineageTag: 68c19dae-8f04-436a-b804-c383e3a9d0ab
+		summarizeBy: none
+		sourceColumn: iso_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_of_week
+		dataType: int64
+		formatString: 0
+		lineageTag: cbad4c43-409a-40d3-8bb9-159717cd7bd7
+		summarizeBy: none
+		sourceColumn: day_of_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column year_quarter
+		dataType: string
+		lineageTag: 8548461f-b7f8-42c0-999a-3b00318adc69
+		summarizeBy: none
+		sourceColumn: year_quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_date = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-7405608991778684.4.azuredatabricks.net", "/sql/1.0/warehouses/be1e5e116ba200fb", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation="2.0", Protocol=null]),
+				    nestle_dev_Database = Source{[Name="nestle_dev",Kind="Database"]}[Data],
+				    gold_Schema = nestle_dev_Database{[Name="gold",Kind="Schema"]}[Data],
+				    dim_date_Table = gold_Schema{[Name="dim_date",Kind="Table"]}[Data]
+				in
+				    dim_date_Table
+
