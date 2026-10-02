@@ -1,0 +1,57 @@
+# Databricks Asset Bundle: the whole lakehouse pipeline as one job (serverless, manual trigger only)
+#   databricks bundle validate
+#   databricks bundle deploy            # uploads notebooks + creates/updates the job
+#   databricks bundle run nestle_lakehouse_pipeline
+bundle:
+  name: nestle_lakehouse
+
+workspace:
+  host: https://adb-7405608991778684.4.azuredatabricks.net
+
+include: []
+
+resources:
+  jobs:
+    nestle_lakehouse_pipeline:
+      name: nestle_lakehouse_pipeline
+      description: "Legacy ERP (Azure SQL) + distributor files + POS events -> bronze/silver/gold, reconciliation, governance, forecast"
+      max_concurrent_runs: 1
+      tags:
+        project: nestle-lakehouse
+      tasks:
+        - task_key: bronze_erp
+          notebook_task: { notebook_path: ./databricks/notebooks/01_bronze_erp.py }
+          max_retries: 1
+        - task_key: bronze_files
+          notebook_task: { notebook_path: ./databricks/notebooks/02_bronze_files.py }
+          max_retries: 1
+        - task_key: silver_reference
+          depends_on: [ { task_key: bronze_erp }, { task_key: bronze_files } ]
+          notebook_task: { notebook_path: ./databricks/notebooks/03_silver_reference.py }
+        - task_key: silver_sales
+          depends_on: [ { task_key: silver_reference } ]
+          notebook_task: { notebook_path: ./databricks/notebooks/04_silver_sales.py }
+        - task_key: silver_sellout
+          depends_on: [ { task_key: silver_reference } ]
+          notebook_task: { notebook_path: ./databricks/notebooks/05_silver_sellout.py }
+        - task_key: gold
+          depends_on: [ { task_key: silver_sales }, { task_key: silver_sellout } ]
+          notebook_task: { notebook_path: ./databricks/notebooks/06_gold.py }
+        - task_key: governance
+          depends_on: [ { task_key: gold } ]
+          notebook_task: { notebook_path: ./databricks/notebooks/08_governance.sql }
+        - task_key: reconciliation
+          depends_on: [ { task_key: gold } ]
+          notebook_task: { notebook_path: ./databricks/notebooks/07_reconciliation.py }
+        - task_key: pos_stream
+          depends_on: [ { task_key: gold } ]
+          notebook_task: { notebook_path: ./databricks/notebooks/10_pos_stream.py }
+          max_retries: 2
+        - task_key: ml_forecast
+          depends_on: [ { task_key: gold } ]
+          notebook_task: { notebook_path: ./databricks/notebooks/09_ml_forecast.py }
+
+targets:
+  dev:
+    mode: development
+    default: true

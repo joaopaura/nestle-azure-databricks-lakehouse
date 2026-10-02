@@ -77,6 +77,9 @@ def rebuild_history(cur: pd.DataFrame, log: pd.DataFrame, key: str, start_col: s
 started = now()
 cur = spark.table("nestle_dev.bronze.erp_customers").drop("_ingested_at", "_source").toPandas()
 log = spark.table("nestle_dev.bronze.erp_customer_changes").drop("_ingested_at", "_source").toPandas()
+no_op = log["old_value"] == log["new_value"]            # the legacy ERP logs some updates that change nothing
+dq_check("silver", "customers_scd2", "no_op_audit_entries_ignored", int(no_op.sum()), len(log), threshold_pct=5.0)
+log = log[~no_op]
 TYPE_OF_CHANNEL = {"Modern trade": "Retail chain", "Traditional trade": "Wholesaler"}
 
 

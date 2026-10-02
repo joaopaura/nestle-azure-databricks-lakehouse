@@ -1,0 +1,33 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -r generator/requirements.txt pytest
+      - name: Unit tests (generator)
+        run: pytest -q tests
+      - name: Syntax check (generator, infra, notebooks)
+        run: python -m py_compile generator/*.py infra/*.py databricks/notebooks/*.py
+
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@main
+      - name: Validate Databricks Asset Bundle
+        env:
+          DATABRICKS_HOST: https://adb-7405608991778684.4.azuredatabricks.net
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          if [ -z "$DATABRICKS_TOKEN" ]; then echo "DATABRICKS_TOKEN secret not set: skipping bundle validate"; exit 0; fi
+          databricks bundle validate

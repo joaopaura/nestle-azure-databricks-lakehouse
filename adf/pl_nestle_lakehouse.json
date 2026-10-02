@@ -1,0 +1,16 @@
+{
+  "name": "pl_nestle_lakehouse",
+  "properties": {
+    "description": "Enterprise orchestration entry point: triggers the Databricks job nestle_lakehouse_pipeline (manual run only)",
+    "activities": [
+      {
+        "name": "Run Databricks lakehouse job",
+        "type": "DatabricksJob",
+        "typeProperties": { "jobId": "<job id of [dev] nestle_lakehouse_pipeline>" },
+        "linkedServiceName": { "referenceName": "ls_databricks_nestle", "type": "LinkedServiceReference" },
+        "policy": { "timeout": "0.02:00:00", "retry": 0 }
+      }
+    ],
+    "annotations": ["nestle-lakehouse"]
+  }
+}
